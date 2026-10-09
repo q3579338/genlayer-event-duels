@@ -11,6 +11,7 @@
 - Chrome 本地演示：创建挑战 → 切换参与者 → 接受 → 快进到期 → YES → 胜方额度 0.2 → 提取归零。
 - Chrome 本地演示：另一挑战 → UNKNOWN → 快进到 72 小时后 → 双方退款，乙方额度显示 0.1。
 - 浏览器上述流程未记录 JavaScript 错误。
+- GitHub Actions 的 [Checks](https://github.com/q3579338/genlayer-event-duels/actions/runs/37882757713) 和 [Publish demo](https://github.com/q3579338/genlayer-event-duels/actions/runs/37882757576) 已通过；公开 GitHub Pages 页面已在 Chrome 打开并正常显示。
 
 ## 单元测试覆盖
 

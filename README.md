@@ -4,6 +4,8 @@
 
 A Chinese-first, testnet-only application for two-party GitHub release predictions. A GenLayer Intelligent Contract locks the terms and equal deposits, checks a fixed release endpoint, reaches a YES / NO / UNKNOWN verdict, and accounts for settlement or refunds.
 
+**[打开公开演示](https://q3579338.github.io/genlayer-event-duels/)** · [自动检查](https://github.com/q3579338/genlayer-event-duels/actions/workflows/ci.yml) · [部署说明](docs/DEPLOYMENT.md)
+
 ![本地演示界面，不代表链上部署或真实用户活动](docs/preview.png)
 
 ## 当前版本

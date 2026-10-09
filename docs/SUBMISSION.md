@@ -24,9 +24,11 @@ The repository includes the actual Python contract, a Chinese React frontend, a 
 
 **源码：** https://github.com/q3579338/genlayer-event-duels
 
+**公开演示：** https://q3579338.github.io/genlayer-event-duels/ （默认是明确标注的本地模拟，不代表已上链）
+
 ## 提交前还需完成
 
-1. 公开可访问的体验网址。
+1. 检查公开演示网址可正常访问（2026-10-09 已在 Chrome 验证）。
 2. 真实测试网部署与最小交互证据，按 `DEPLOYMENT.md` 记录。
 3. 填写项目 Logo、主分类、使用步骤及可复现结果。
 4. 把说明中的验证状态更新成事实，再选择合适类别提交。不要把本地模拟截图当成真实链上交互。
