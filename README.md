@@ -6,6 +6,8 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 
 **[打开公开演示](https://q3579338.github.io/genlayer-event-duels/)** · [自动检查](https://github.com/q3579338/genlayer-event-duels/actions/workflows/ci.yml) · [部署说明](docs/DEPLOYMENT.md)
 
+**Bradbury 合约：** [`0x3cE9F1A0143f77405784F47Aa56467013c3846E9`](https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9) · [部署交易](https://explorer-bradbury.genlayer.com/tx/0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90)
+
 ![本地演示界面，不代表链上部署或真实用户活动](docs/preview.png)
 
 ## 当前版本
@@ -13,10 +15,10 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - Python 智能合约：等额投入、固定双方、公开证据、三态裁决、退款和提取额度。
 - React 中文界面：创建、接受、查看证据、请求核验、取消、退款和提现入口。
 - 本地演示：无需钱包，甲乙双方可切换，人工选择裁决结果，模拟时间可快进。
-- Bradbury 连接：通过 `genlayer-js` 连接钱包，读取最终确认数据、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
+- Bradbury 连接：默认填入实际合约地址，可选择共识接受 / 最终确认的读取状态。通过 `genlayer-js` 连接钱包、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
 - MIT 开源；8 项 Python 状态转换测试、4 项交易确认测试、TypeScript 检查、生产构建。
 
-**验证边界：首次部署已签名广播，但构造函数执行报错；修正版已通过节点模拟，仍待成功部署确认。尚未验证真实 AI 裁决或链上到账。** 详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
+**验证边界：修正版已部署并成功执行，当前记录为 `ACCEPTED` / `FINISHED_WITH_RETURN`；Chrome 页面已读取真实合约。最终确认仍待完成，尚未验证真实挑战交易、AI 裁决或链上到账。** 详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
 
 ## 为什么使用 GenLayer
 

@@ -20,11 +20,13 @@
 
 Event Duels explores a narrow trust problem: two participants should not depend on a website operator to rewrite their agreed release criteria or choose a payout recipient after the event. The Intelligent Contract fixes the repository, tag, feature claim, deadlines and equal deposits. It fetches the specified GitHub release through GenLayer, evaluates the feature claim with independent execution and strict equivalence, and stores the evidence and verdict. YES and NO credit the winner; UNKNOWN keeps the challenge open until a 72-hour refund threshold. Participants withdraw their credited amount separately.
 
-The repository includes the actual Python contract, a Chinese React frontend, a clearly labelled local demonstration, a Bradbury wallet adapter, eight focused contract-state tests, four transaction-lifecycle tests, deployment instructions and explicit trust limitations. The current version has passed local checks, remote schema extraction and a read-only constructor simulation. The first signed deployment produced a constructor error, which was diagnosed and corrected. Successful on-chain deployment and end-to-end wallet/consensus/transfer validation are still pending.
+The repository includes the actual Python contract, a Chinese React frontend, a clearly labelled local demonstration, a Bradbury wallet adapter, eight focused contract-state tests, four transaction-lifecycle tests, deployment instructions and explicit trust limitations. The current version has passed local checks, remote schema extraction and a read-only constructor simulation. A first deployment error was diagnosed and corrected. The corrected Bradbury deployment has reached ACCEPTED with FINISHED_WITH_RETURN; its deployed source matches the repository and the frontend reads the real contract. Finalization and live duel/AI/settlement/payout validation are still pending.
 
 **源码：** https://github.com/q3579338/genlayer-event-duels
 
 **公开演示：** https://q3579338.github.io/genlayer-event-duels/ （默认是明确标注的本地模拟，不代表已上链）
+
+**实际合约：** https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9 （已接受并执行成功，最终确认待核验）
 
 ## 提交前还需完成
 

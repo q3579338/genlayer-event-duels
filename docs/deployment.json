@@ -1,0 +1,27 @@
+{
+  "network": "GenLayer Bradbury",
+  "walletChainId": 4221,
+  "address": "0x3cE9F1A0143f77405784F47Aa56467013c3846E9",
+  "transactionId": "0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90",
+  "sourceCommit": "3e12f38b92138c1cc17d9fb3821c615e47cf6c6d",
+  "sourceSha256": "745fc0b06bfa7b07670d6bb3d4e64ab6b88b2fb6b50afc96d4a05de8b489c12c",
+  "codeMatchesRepository": true,
+  "observedAt": "2026-10-09T05:12:55.313Z",
+  "status": "ACCEPTED",
+  "statusCode": 5,
+  "executionResult": 1,
+  "executionResultName": "FINISHED_WITH_RETURN",
+  "finalized": false,
+  "readValidation": {
+    "state": "accepted",
+    "version": "event-duels/0.1.0",
+    "count": 0,
+    "locked": "0",
+    "owed": "0"
+  },
+  "finalizationEligibleAfterUnix": 1791524197,
+  "limitations": [
+    "No live duel creation or settlement tested",
+    "No real AI consensus or external payout verified"
+  ]
+}

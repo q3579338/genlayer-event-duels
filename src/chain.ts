@@ -1,12 +1,12 @@
-import { createClient } from "genlayer-js";
+import { abi, createClient } from "genlayer-js";
 import { testnetBradbury } from "genlayer-js/chains";
-import { TransactionHashVariant } from "genlayer-js/types";
 import type { CalldataEncodable, TransactionHash } from "genlayer-js/types";
-import { isAddress } from "viem";
+import { hexToBytes, isAddress, toHex, toRlp, zeroAddress } from "viem";
 import type { Address } from "viem";
 import type { Duel } from "./model";
 import { VERSION } from "./model";
-import { waitForOutcome } from "./transaction";
+import { finalOutcome, waitForOutcome } from "./transaction";
+import { DEPLOYMENT } from "./deployment";
 
 type Provider = NonNullable<
   NonNullable<Parameters<typeof createClient>[0]>["provider"]
@@ -64,15 +64,58 @@ export async function connectWallet(): Promise<Address> {
   await client.connect("testnetBradbury");
   return accounts[0].toLowerCase() as Address;
 }
-export async function readDuels(contract: Address, wallet: string) {
+function jsonSafe(value: unknown): unknown {
+  if (typeof value === "bigint")
+    return value <= BigInt(Number.MAX_SAFE_INTEGER) && value >= BigInt(Number.MIN_SAFE_INTEGER)
+      ? Number(value) : String(value);
+  if (value instanceof Map)
+    return Object.fromEntries([...value.entries()].map(([key, v]) => [key, jsonSafe(v)]));
+  if (Array.isArray(value)) return value.map(jsonSafe);
+  return value;
+}
+
+export type ReadState = "accepted" | "finalized";
+
+async function readContractState(contract: Address, functionName: string, args: CalldataEncodable[], status: ReadState) {
+  // The stable SDK sends transaction_hash_variant, which this node ignores.
+  // Use the node's documented status filter explicitly to avoid treating
+  // accepted state as finalized state.
+  const data = toRlp([
+    toHex(abi.calldata.encode(abi.calldata.makeCalldataObject(functionName, args, undefined))),
+    "0x00",
+  ]);
+  const response = await fetch(chain.rpcUrls.default.http[0], {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "gen_call", params: [{
+      type: "read", from: zeroAddress, to: contract, data, status,
+    }] }),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!response.ok) throw new Error(`节点读取失败（${response.status}），请稍后重试。`);
+  const rpc = await response.json();
+  if (rpc.error) throw new Error(rpc.error.message);
+  const result = rpc.result;
+  if (typeof result !== "string" && result?.status?.code !== 0)
+    throw new Error(result?.status?.message || "节点未返回成功的读取结果。");
+  const encoded = typeof result === "string" ? result : result.data;
+  if (typeof encoded !== "string") throw new Error("节点读取回执缺少数据。");
+  return jsonSafe(abi.calldata.decode(hexToBytes(
+    (encoded.startsWith("0x") ? encoded : `0x${encoded}`) as `0x${string}`,
+  )));
+}
+
+export async function readDuels(contract: Address, wallet: string, state: ReadState = "accepted") {
+  if (contract.toLowerCase() === DEPLOYMENT.address.toLowerCase()) {
+    const receipt = await reader.getTransaction({ hash: DEPLOYMENT.hash as TransactionHash });
+    const outcome = finalOutcome(receipt);
+    const accepted = Number(receipt.status) === 5 && receipt.txExecutionResult === 1;
+    if (outcome === null && (state === "finalized" || !accepted))
+      throw new Error(`合约部署正在等待最终确认（${receipt.statusName || receipt.status}）。可选择「共识已接受」查看当前数据，无需重新部署。`);
+    if (outcome === false) throw new Error("部署交易未成功执行，请检查部署记录。");
+  }
   const read = (functionName: string, args: CalldataEncodable[] = []) =>
-    reader.readContract({
-      address: contract,
-      functionName,
-      args,
-      jsonSafeReturn: true,
-      transactionHashVariant: TransactionHashVariant.LATEST_FINAL,
-    });
+    readContractState(contract, functionName, args, state);
   const stats = (await read("get_stats")) as { version?: string };
   if (stats.version !== VERSION)
     throw new Error("合约版本不匹配，请使用本仓库的 EventDuels 合约。");

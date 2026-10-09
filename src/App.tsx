@@ -41,8 +41,9 @@ import {
   readDuels,
   send,
 } from "./chain";
-import type { Pending } from "./chain";
+import type { Pending, ReadState } from "./chain";
 import contractSource from "../contracts/EventDuels.py?raw";
+import { DEPLOYMENT } from "./deployment";
 
 const token = (wei: string) => formatEther(BigInt(wei));
 const dateInput = (seconds: number) => {
@@ -60,11 +61,12 @@ export default function App() {
     () =>
       localStorage.getItem("event-duels:contract") ||
       import.meta.env.VITE_CONTRACT_ADDRESS ||
-      "",
+      DEPLOYMENT.address,
   );
   const [liveDuels, setLiveDuels] = useState<Duel[]>([]);
   const [credit, setCredit] = useState("0");
   const [ready, setReady] = useState(false);
+  const [readState, setReadState] = useState<ReadState>("accepted");
   const [selected, setSelected] = useState<number | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [tab, setTab] = useState("全部挑战");
@@ -119,7 +121,7 @@ export default function App() {
     setReady(false);
     setLiveDuels([]);
     setCredit("0");
-    const result = await readDuels(address(c), w);
+    const result = await readDuels(address(c), w, readState);
     setLiveDuels(result.duels);
     setCredit(result.credit);
     setReady(true);
@@ -454,6 +456,11 @@ export default function App() {
             <div>
               <strong>连接合约</strong>
               <p>仅支持 Bradbury（4221）。Studio 模拟器地址不能在此使用。</p>
+              <p>
+                已填入本项目合约地址。共识接受后的数据仍可能因申诉而改变。
+                <a href={`https://explorer-bradbury.genlayer.com/tx/${DEPLOYMENT.hash}`}
+                  target="_blank" rel="noreferrer">查看部署记录 <ExternalLink size={12} /></a>
+              </p>
               {!contract.trim() && (
                 <div className="notice">
                   尚未填写合约地址。添加 RPC 只配置钱包网络；还需先在 GenLayer Studio
@@ -461,6 +468,21 @@ export default function App() {
                 </div>
               )}
             </div>
+            <label>
+              读取状态：{" "}
+              <select value={readState} disabled={busy || !!pending}
+                onChange={(e) => {
+                  setReadState(e.target.value as ReadState);
+                  setReady(false);
+                  setLiveDuels([]);
+                  setCredit("0");
+                  setError("");
+                  setNotice("");
+                }}>
+                <option value="accepted">共识已接受（可能申诉）</option>
+                <option value="finalized">最终确认</option>
+              </select>
+            </label>
             <div className="rpc-setup">
               <div>
                 <strong>钱包发送交易报错？添加官方 RPC</strong>
@@ -513,7 +535,9 @@ export default function App() {
                 onClick={() =>
                   run(async () => {
                     await refresh();
-                    setNotice("已加载最终确认的链上数据。");
+                    setNotice(readState === "finalized"
+                      ? "已加载最终确认的链上数据。"
+                      : "已加载共识接受的链上数据；尚处于申诉窗口的数据仍可能改变。");
                   })
                 }
               >
@@ -605,7 +629,7 @@ export default function App() {
               ))}
             </div>
             <span>
-              {isDemo ? "仅当前浏览器可见" : "显示最近 50 条最终确认记录"}
+              {isDemo ? "仅当前浏览器可见" : `显示最近 50 条${readState === "finalized" ? "最终确认" : "共识接受"}记录`}
             </span>
           </div>
           <div className="cards">
