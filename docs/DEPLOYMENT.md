@@ -1,6 +1,6 @@
 # 部署与最小链上验收
 
-状态：修正版部署已执行成功，当前为共识已接受（`ACCEPTED`），尚未最终确认。不要把共识接受、本地演示或只读模拟写成最终确认或完整链上交互证据。
+状态：修正版部署已执行成功，当前已最终确认（`FINALIZED`），执行结果为 `FINISHED_WITH_RETURN`。不要把共识接受、本地演示或只读模拟写成最终确认或完整链上交互证据。
 
 ## 修正版实际部署
 
@@ -8,7 +8,7 @@
 - 合约：[0x3cE9F1A0143f77405784F47Aa56467013c3846E9](https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9)。
 - 交易：[0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90](https://explorer-bradbury.genlayer.com/tx/0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90)。
 - 源码提交：`3e12f38b92138c1cc17d9fb3821c615e47cf6c6d`；已读取链上源码并核对与仓库一致（仅规范换行与首尾空白）。
-- 回执：`status=5`、`txExecutionResult=1`，即共识接受且执行成功。
+- 最新回执：`status=7`、`txExecutionResult=1`，即最终确认且执行成功。最终状态的 `get_stats` 已再次通过读取。
 - 已读取 `get_stats`：版本 `event-duels/0.1.0`，挑战数 0、锁定额度 0、待提取额度 0；前端已加载真实空列表。
 - 节点返回的最终确认资格时间为北京时间 2026-10-09 13:36:37。到时仍需网络实际写入最终确认状态，时间经过本身不证明 `FINALIZED`。
 

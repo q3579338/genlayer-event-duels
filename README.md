@@ -18,7 +18,7 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - Bradbury 连接：默认填入实际合约地址，可选择共识接受 / 最终确认的读取状态。通过 `genlayer-js` 连接钱包、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
 - MIT 开源；8 项 Python 状态转换测试、4 项交易确认测试、TypeScript 检查、生产构建。
 
-**验证边界：修正版已部署并成功执行，当前记录为 `ACCEPTED` / `FINISHED_WITH_RETURN`；Chrome 页面已读取真实合约。最终确认仍待完成，尚未验证真实挑战交易、AI 裁决或链上到账。** 详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
+**验证边界：修正版已部署并成功执行，当前记录为 `FINALIZED` / `FINISHED_WITH_RETURN`；Chrome 页面已读取真实合约。部署已最终确认，尚未验证真实挑战交易、AI 裁决或链上到账。** 详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
 
 ## 为什么使用 GenLayer
 
