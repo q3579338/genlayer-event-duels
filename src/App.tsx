@@ -450,8 +450,14 @@ export default function App() {
         {!isDemo && (
           <section className="connection">
             <div>
-              <strong>连接已部署的合约</strong>
+              <strong>连接合约</strong>
               <p>仅支持 Bradbury（4221）。Studio 模拟器地址不能在此使用。</p>
+              {!contract.trim() && (
+                <div className="notice">
+                  尚未填写合约地址。添加 RPC 只配置钱包网络；还需先在 GenLayer Studio
+                  完成部署，再把生成的合约地址填入下方。钱包地址不能代替合约地址。
+                </div>
+              )}
             </div>
             <div className="rpc-setup">
               <div>
@@ -489,7 +495,7 @@ export default function App() {
             <div className="connect-row">
               <input
                 aria-label="合约地址"
-                placeholder="0x… 合约地址"
+                placeholder="粘贴 Studio 部署成功后生成的 0x… 合约地址"
                 value={contract}
                 disabled={busy || !!pending}
                 onChange={(e) => {
@@ -497,10 +503,11 @@ export default function App() {
                   setReady(false);
                   setLiveDuels([]);
                   setCredit("0");
+                  setError("");
                 }}
               />
               <button
-                disabled={busy || !!pending}
+                disabled={busy || !!pending || !contract.trim()}
                 onClick={() =>
                   run(async () => {
                     await refresh();
