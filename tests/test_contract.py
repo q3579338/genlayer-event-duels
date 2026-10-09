@@ -210,8 +210,9 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Stake"):
             self.call("create_duel", "test/repo", "v1", "Release feature", self.now + 600, self.now + 3600)
         HOST.chain_id = 1
-        with self.assertRaisesRegex(ValueError, "testnets"):
-            module.EventDuels()
+        # Observed Bradbury GenVM context differs from the wallet's chain ID.
+        instance = module.EventDuels()
+        self.assertEqual(instance.get_stats()["count"], 0)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-import { createClient, isSuccessful } from "genlayer-js";
+import { createClient } from "genlayer-js";
 import { testnetBradbury } from "genlayer-js/chains";
 import { TransactionHashVariant } from "genlayer-js/types";
 import type { CalldataEncodable, TransactionHash } from "genlayer-js/types";
@@ -6,6 +6,7 @@ import { isAddress } from "viem";
 import type { Address } from "viem";
 import type { Duel } from "./model";
 import { VERSION } from "./model";
+import { waitForOutcome } from "./transaction";
 
 type Provider = NonNullable<
   NonNullable<Parameters<typeof createClient>[0]>["provider"]
@@ -98,9 +99,9 @@ export async function send(
     throw new Error("账户或网络已改变，请重新连接 Bradbury 钱包。");
   const client = createClient({ chain, account: wallet as Address, provider });
   const call = { address: contract, functionName: action, args, value };
-  // A prototype uses simulation per write; never silently falls back to zero fees.
-  const fees = await client.estimateTransactionFeesForWrite(call);
-  const hash = await client.writeContract({ ...call, fees });
+  // Stable Bradbury uses the 1.x submission ABI. The 2.x fee-distribution
+  // API belongs to the separate v0.6 preview stack, not this deployment.
+  const hash = await client.writeContract(call);
   if (typeof hash !== "string" || !/^0x[0-9a-fA-F]{64}$/.test(hash))
     throw new Error(
       "钱包返回的交易编号无法识别，请先在钱包中核对，避免重复提交。",
@@ -109,14 +110,16 @@ export async function send(
   localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
   return pending;
 }
-export async function finalize(pending: Pending) {
-  const receipt = await reader.waitForFinalization({
-    hash: pending.hash,
-    interval: 5000,
-    retries: 12,
-  });
+export async function finalize(
+  pending: Pending,
+  onProgress?: (status: string) => void,
+) {
+  const success = await waitForOutcome(
+    () => reader.getTransaction({ hash: pending.hash }),
+    { onProgress },
+  );
   localStorage.removeItem(PENDING_KEY);
-  return isSuccessful(receipt);
+  return success;
 }
 export function loadPending(): Pending | null {
   try {

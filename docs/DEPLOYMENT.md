@@ -2,6 +2,16 @@
 
 状态：本项目尚无已验证的部署地址。不要把示例地址、远程 schema 检查或本地演示写成链上部署证据。
 
+## 2026-10-09 兼容性修正
+
+首次成功广播的部署：[交易记录](https://explorer-bradbury.genlayer.com/tx/0x6e577bec7808a43ed13d5bb1ade5b215894c6af19fd7c15070191580947bdcb1)，源码提交 `8fd120c`。节点返回 `ACCEPTED`、`txExecutionResult=2`（执行错误），不能把达成共识写成部署成功。
+
+调试回放触发了构造函数的链编号检查。只读 `gen_call` 进一步验证：Bradbury 节点传给 GenVM 的 `gl.message.chain_id` 为 `1`，而钱包的 EVM 网络编号是 `4221`。已移除这项错误比较；前端继续检查钱包网络为 4221。该修正不是合约层面的主网隔离保证。
+
+修正后 `npm run check:deploy` 已在 Bradbury 节点执行构造函数成功，未发送交易。后续更改构造函数时应重新执行这项检查，不能只检查 schema。
+
+前端 SDK 固定为 `genlayer-js@1.1.8`。原 `2.0.0-rc.1` 读取当前 Bradbury 交易时要求不存在的 `ConsensusDataBigRounds` 注册项；切换稳定版后已成功读取实际交易。v0.6 RC 属于单独的预览发布系列，参考[官方迁移说明](https://docs.genlayer.com/developers/consensus-v06-migration)。
+
 ## 先在 Studio 检查
 
 1. 打开 [GenLayer Studio](https://studio.genlayer.com/contracts)，导入 `contracts/EventDuels.py`。

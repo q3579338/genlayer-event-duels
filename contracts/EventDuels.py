@@ -25,8 +25,9 @@ class EventDuels(gl.Contract):
     owed: u256
 
     def __init__(self):
-        if int(gl.message.chain_id) not in (61999, 61997, 4221):
-            raise gl.vm.UserError("Only GenLayer Studio or Bradbury testnets are supported")
+        # The current Bradbury GenVM RPC supplies chain_id=1, although its
+        # wallet chain ID is 4221. Enforce the wallet network in the frontend;
+        # comparing this runtime field to an EVM chain ID rejects valid deploys.
         self.count = u256(0)
         self.locked = u256(0)
         self.owed = u256(0)

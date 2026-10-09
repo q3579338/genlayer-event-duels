@@ -13,10 +13,10 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - Python 智能合约：等额投入、固定双方、公开证据、三态裁决、退款和提取额度。
 - React 中文界面：创建、接受、查看证据、请求核验、取消、退款和提现入口。
 - 本地演示：无需钱包，甲乙双方可切换，人工选择裁决结果，模拟时间可快进。
-- Bradbury 连接：通过 `genlayer-js` 连接钱包，读取最终确认数据，估算费用、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
-- MIT 开源；8 项 Python 状态转换测试、TypeScript 检查、生产构建。
+- Bradbury 连接：通过 `genlayer-js` 连接钱包，读取最终确认数据、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
+- MIT 开源；8 项 Python 状态转换测试、4 项交易确认测试、TypeScript 检查、生产构建。
 
-**验证边界：当前未部署本项目合约，尚未验证真实钱包交易、AI 共识或链上到账。** 本地演示和单元测试都不能替代链上测试。远程 GenVM 已成功提取合约接口，但这不代表所有方法已在链上执行。
+**验证边界：首次部署已签名广播，但构造函数执行报错；修正版已通过节点模拟，仍待成功部署确认。尚未验证真实 AI 裁决或链上到账。** 详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
 
 ## 为什么使用 GenLayer
 
@@ -75,11 +75,13 @@ npm run dev
 npm test
 npm run build
 npm run check:schema
+npm run check:deploy
 ```
 
 - `npm test`：直接导入实际 Python 合约，使用最小 GenLayer 主机替身，检查权限、投入、期限、三态结算、重复提现和额度守恒。外部网络、AI、共识及转账均为替身。
 - `npm run build`：TypeScript 类型检查和 Vite 生产打包。
 - `npm run check:schema`：把公开合约源码发送到 Bradbury RPC，请远程 GenVM 提取接口；产物写到忽略提交的 `artifacts/`。需要网络，不会部署合约。
+- `npm run check:deploy`：通过 Bradbury 的只读 `gen_call` 执行构造函数，检查实际运行时兼容性，不签名、不广播交易。
 - 可选：安装 `genvm-lint==0.11.0` 后运行 `genvm-lint check contracts/EventDuels.py`。Windows 控制台若编码异常，设置 `PYTHONIOENCODING=utf-8`。
 
 验证记录见 [VALIDATION.md](docs/VALIDATION.md)。GitHub Actions 对提交执行状态测试和构建。
@@ -103,9 +105,9 @@ docs/                    部署、验证与贡献提交草稿
 - 网络异常或无效 JSON 可能让一次裁决交易失败；不会据此把资金判给某一方。参与者可重试，超过退款时间可退款。
 - 合约要求 `sender == origin`，只支持直接钱包调用。它不是通用智能账户兼容性保证。
 - 提现会发出独立外部转账。父交易成功不应被当成钱包到账证明；需核验外部执行结果。当前原型尚未提供外部转账失败后的补偿机制。
-- UI 每次写操作都估算费用。Bradbury RPC 或 SDK 版本不兼容时会报错，不会绕过费用估算继续发送。SDK 固定为 `2.0.0-rc.1`，部署前需进行真实兼容性验证。
+- SDK 固定为稳定版 `1.1.8`，已验证能读取 Bradbury 实际部署交易。`2.0.0-rc.1` 对应另一套 v0.6 预览接口，当前 Bradbury 缺少它依赖的注册项。写入使用稳定版 SDK 的 Gas 估算及钱包确认；不调用预览版费用接口。
 - 单页目前展示最近 50 条挑战。无索引服务、争议申诉界面、历史证据存档或生产级审计。
-- 构造函数仅接受 Studio / Studio Dev / Bradbury 链编号。不得用于真实资金或主网。
+- 前端仅接受 Bradbury 钱包链编号 4221。当前 Bradbury GenVM 的模拟上下文却报告 `chain_id=1`，因此合约不能用该字段与钱包编号对比。合约不具备阻止其他网络部署的保证，不得用于真实资金或主网。
 
 ## 官方参考
 

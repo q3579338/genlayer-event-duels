@@ -20,7 +20,7 @@
 
 Event Duels explores a narrow trust problem: two participants should not depend on a website operator to rewrite their agreed release criteria or choose a payout recipient after the event. The Intelligent Contract fixes the repository, tag, feature claim, deadlines and equal deposits. It fetches the specified GitHub release through GenLayer, evaluates the feature claim with independent execution and strict equivalence, and stores the evidence and verdict. YES and NO credit the winner; UNKNOWN keeps the challenge open until a 72-hour refund threshold. Participants withdraw their credited amount separately.
 
-The repository includes the actual Python contract, a Chinese React frontend, a clearly labelled local demonstration, a Bradbury wallet adapter, eight focused state tests, deployment instructions and explicit trust limitations. The current version has passed local build/state checks and remote GenVM schema extraction. It has not yet completed on-chain deployment or end-to-end wallet/consensus/transfer validation.
+The repository includes the actual Python contract, a Chinese React frontend, a clearly labelled local demonstration, a Bradbury wallet adapter, eight focused contract-state tests, four transaction-lifecycle tests, deployment instructions and explicit trust limitations. The current version has passed local checks, remote schema extraction and a read-only constructor simulation. The first signed deployment produced a constructor error, which was diagnosed and corrected. Successful on-chain deployment and end-to-end wallet/consensus/transfer validation are still pending.
 
 **源码：** https://github.com/q3579338/genlayer-event-duels
 

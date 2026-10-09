@@ -127,7 +127,9 @@ export default function App() {
   }
   async function wait(p: Pending) {
     setNotice("已发送，正在等待最终确认；查询超时后可继续查询。");
-    const success = await finalize(p);
+    const success = await finalize(p, (status) =>
+      setNotice(`交易已发送，当前状态：${status}。请勿重复发送。`),
+    );
     setPending(null);
     if (!success)
       throw new Error("交易已结束但未成功执行，请在浏览器中核对原因。");
