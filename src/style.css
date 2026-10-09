@@ -1,4 +1,36 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+.rpc-setup {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  justify-content: space-between;
+  border: 1px solid #445637;
+  background: #263422;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 18px;
+  font-size: 12px;
+}
+.rpc-setup code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #c6f489;
+  margin: 7px 0;
+}
+.rpc-setup button {
+  flex-shrink: 0;
+}
+.rpc-setup a {
+  font-size: 11px;
+  text-decoration: underline;
+}
+@media (max-width: 650px) {
+  .rpc-setup {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
 :root {
   font-family: "Space Grotesk", "Noto Sans SC", sans-serif;
   color: #eaf0f4;

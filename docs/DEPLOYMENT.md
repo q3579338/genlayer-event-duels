@@ -18,6 +18,19 @@
 
 本仓库不收集、生成或保存用于链上部署的私钥，也没有自动支付主网费用的脚本。
 
+## MetaMask 的 RPC 格式错误
+
+2026-10-09 在 Studio 部署时遇到 `cannot unmarshal string into Go struct field Request.id of type int`，发生于钱包广播阶段。只读请求复现结果：`https://rpc-bradbury.genlayer.com` 接受数字请求 ID，但拒绝字符串 ID；官方底层链端点 `https://rpc.testnet-chain.genlayer.com` 两种都接受，均返回 chain ID 4221。
+
+在本页面选择「连接测试网」→「添加官方钱包 RPC」，即可请求钱包添加以下配置：
+
+- RPC URL：`https://rpc.testnet-chain.genlayer.com`
+- Chain ID：`4221`
+- 币种：`GEN`
+- 区块浏览器：`https://explorer.testnet-chain.genlayer.com`
+
+需要在 MetaMask 确认。已有此网络时，钱包可能只返回请求成功而不修改当前 RPC，请在该网络的设置中选中新地址。添加网络不会自动签名、广播或重试部署。智能合约读取仍走 `rpc-bradbury.genlayer.com`，底层链端点不能替代 `gen_*` 接口。参考：[官方 Networks 文档](https://docs.genlayer.com/developers/networks)。
+
 ## 一次最小验收
 
 使用两个不同的测试网钱包，选自己有权发布的公开测试仓库。建议每方使用最低金额 0.001 test GEN，另外预留网络费用。

@@ -33,6 +33,8 @@ import {
 import type { Duel, Verdict } from "./model";
 import {
   address,
+  addWalletRpc,
+  WALLET_RPC,
   connectWallet,
   finalize,
   loadPending,
@@ -450,6 +452,39 @@ export default function App() {
             <div>
               <strong>连接已部署的合约</strong>
               <p>仅支持 Bradbury（4221）。Studio 模拟器地址不能在此使用。</p>
+            </div>
+            <div className="rpc-setup">
+              <div>
+                <strong>钱包发送交易报错？添加官方 RPC</strong>
+                <code>{WALLET_RPC}</code>
+                <p>
+                  链 ID：4221 · 币种：GEN · 只请求添加网络配置，不发送交易。
+                </p>
+                <p>
+                  如果此网络已存在，请在 MetaMask 中选中新
+                  RPC；网页无法确认钱包当前选中的 RPC 地址。
+                </p>
+                <a
+                  href="https://docs.genlayer.com/developers/networks"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  核对官方网络说明 <ExternalLink size={12} />
+                </a>
+              </div>
+              <button
+                disabled={busy || !!pending}
+                onClick={() =>
+                  run(async () => {
+                    await addWalletRpc();
+                    setNotice(
+                      "钱包已处理添加请求。请在 MetaMask 中确认并选中 https://rpc.testnet-chain.genlayer.com；网络已存在时，钱包可能不会自动更换 RPC。",
+                    );
+                  })
+                }
+              >
+                添加官方钱包 RPC
+              </button>
             </div>
             <div className="connect-row">
               <input

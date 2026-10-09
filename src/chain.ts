@@ -17,6 +17,27 @@ declare global {
 }
 export const chain = testnetBradbury;
 export const reader = createClient({ chain });
+// The official L2 endpoint accepts MetaMask's string JSON-RPC request IDs.
+// Keep Intelligent Contract reads on the separate GenLayer RPC above.
+export const WALLET_RPC = "https://rpc.testnet-chain.genlayer.com";
+export async function addWalletRpc(): Promise<void> {
+  if (!window.ethereum)
+    throw new Error("请在已安装 MetaMask 的 Chrome 中打开页面。");
+  await window.ethereum.request({
+    method: "wallet_addEthereumChain",
+    params: [
+      {
+        chainId: "0x107d",
+        chainName: "GenLayer Bradbury Testnet",
+        nativeCurrency: { name: "GEN", symbol: "GEN", decimals: 18 },
+        rpcUrls: [WALLET_RPC],
+        blockExplorerUrls: ["https://explorer.testnet-chain.genlayer.com"],
+      },
+    ],
+  });
+  // EIP-3085 may return success without changing an existing chain's RPC.
+  // Do not report the endpoint as selected or trigger a transaction here.
+}
 export const PENDING_KEY = "event-duels:bradbury:pending";
 export interface Pending {
   hash: TransactionHash;
