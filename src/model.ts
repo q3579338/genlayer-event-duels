@@ -19,6 +19,10 @@ export interface Duel {
   settled_at: number;
   evidence: {
     available?: boolean;
+    tag?: string;
+    title?: string;
+    draft?: boolean;
+    prerelease?: boolean;
     published_at?: string;
     body?: string;
     http_status?: number;

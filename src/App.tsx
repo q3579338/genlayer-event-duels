@@ -31,6 +31,7 @@ import {
   when,
 } from "./model";
 import type { Duel, Verdict } from "./model";
+import { Evidence } from "./Evidence";
 import {
   address,
   addWalletRpc,
@@ -942,19 +943,7 @@ export default function App() {
               <ExternalLink size={13} />
             </a>
             {duel.verdict && (
-              <div className="evidence">
-                <strong>
-                  最近判定：{duel.verdict}
-                  {isDemo && "（人工演示）"}
-                </strong>
-                <p>
-                  {when(duel.last_checked)} · 第 {duel.checks} 次核验
-                </p>
-                <pre>
-                  {duel.evidence.body ||
-                    `未取得足够证据。${duel.evidence.http_status || duel.evidence.problem || ""}`}
-                </pre>
-              </div>
+              <Evidence duel={duel} demo={isDemo} contract={contract} readState={readState} />
             )}
             {error && <div className="error">{error}</div>}
             {notice && <div className="notice">{notice}</div>}
