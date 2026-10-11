@@ -32,6 +32,7 @@ import {
 } from "./model";
 import type { Duel, Verdict } from "./model";
 import { Evidence } from "./Evidence";
+import { duelActionCall } from "./payable";
 import {
   address,
   addWalletRpc,
@@ -209,7 +210,10 @@ export default function App() {
   const action = (name: string, d?: Duel, verdict?: Verdict) =>
     run(async () => {
       if (isDemo) demoAction(name, d, verdict);
-      else await transact(name, d ? [d.id] : []);
+      else {
+        const call = duelActionCall(name, d);
+        await transact(call.name, call.args, call.value);
+      }
     });
   async function create(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

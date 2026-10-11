@@ -1,6 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { finalOutcome, waitForOutcome } from "../src/transaction.ts";
+import { duelActionCall, contractCall } from "../src/payable.ts";
+
+test("accept UI action maps the exact stake in wei to writeContract", async () => {
+  const duel = { id: 42, stake: "1000000000000000001" };
+  const action = duelActionCall("accept_duel", duel);
+  const calls = [];
+  const client = { writeContract: async (call) => calls.push(call) };
+  await client.writeContract(contractCall("0xcontract", action.name, action.args, action.value));
+  assert.deepEqual(calls, [{ address: "0xcontract", functionName: "accept_duel", args: [42], value: 1000000000000000001n }]);
+  for (const name of ["resolve_duel", "cancel_duel", "refund_duel", "withdraw"])
+    assert.equal(duelActionCall(name, name === "withdraw" ? undefined : duel).value, 0n);
+  assert.throws(() => duelActionCall("accept_duel"), /请选择/);
+});
 
 test("accepted or ready-to-finalize is not finalized", () => {
   for (const status of [0, 3, 5, 6, 11, 12, 13])

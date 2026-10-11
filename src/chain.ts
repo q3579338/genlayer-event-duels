@@ -7,6 +7,7 @@ import type { Duel } from "./model";
 import { VERSION } from "./model";
 import { finalOutcome, waitForOutcome } from "./transaction";
 import { DEPLOYMENT } from "./deployment";
+import { contractCall } from "./payable";
 
 type Provider = NonNullable<
   NonNullable<Parameters<typeof createClient>[0]>["provider"]
@@ -141,7 +142,7 @@ export async function send(
   if (accounts[0]?.toLowerCase() !== wallet || Number(chainId) !== chain.id)
     throw new Error("账户或网络已改变，请重新连接 Bradbury 钱包。");
   const client = createClient({ chain, account: wallet as Address, provider });
-  const call = { address: contract, functionName: action, args, value };
+  const call = contractCall(contract, action, args, value);
   // Stable Bradbury uses the 1.x submission ABI. The 2.x fee-distribution
   // API belongs to the separate v0.6 preview stack, not this deployment.
   const hash = await client.writeContract(call);
