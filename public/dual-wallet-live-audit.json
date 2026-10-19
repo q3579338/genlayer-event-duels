@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T22:13:18.740Z",
+  "observedAt": "2026-10-19T22:18:44.805Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -7,16 +7,16 @@
     "creator888": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
     "opponentCDC": "0x378eFaDE29d33eddefcF0Ef700917E343dfA2cdc"
   },
-  "stage": "888 deposit broadcast; consensus incomplete",
+  "stage": "888 deposit accepted and provisionally credited; finalization pending",
   "firstDepositAndSameWalletPayoutAlreadyVerified": "./withdraw-live-audit.json",
   "dualWalletDepositA": {
     "transactionId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
     "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
     "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-    "status": "COMMITTING",
-    "statusCode": 3,
-    "executionResult": 0,
-    "votesCommitted": "4",
+    "status": "ACCEPTED",
+    "statusCode": 5,
+    "executionResult": 1,
+    "votesCommitted": "5",
     "validatorCount": 5,
     "submission": {
       "hash": "0xe37f775571e97bc0c3e9ba36bd4e2aa9c15be5b1c10b1eaf937682af1905b4cf",
@@ -29,7 +29,8 @@
       "gasUsed": "861286",
       "effectiveGasPrice": "179496900",
       "nonce": 6
-    }
+    },
+    "votesRevealed": "5"
   },
   "preparedChallenge": {
     "fields": [
@@ -65,5 +66,40 @@
   "createTransaction": null,
   "acceptTransaction": null,
   "fullDualWalletFlowVerified": false,
-  "limitation": "The 888 wallet has signed and broadcast exactly 0.001 test GEN for dual-wallet funding. Outer EVM success does not establish IC execution or credited final funds. The observed IC receipt is COMMITTING with 4 of 5 votes committed and no execution result. The prepared challenge is not submitted; CDC funding and acceptance have not started. Resume the same transaction; do not deposit again."
+  "limitation": "The signed 888 deposit is ACCEPTED with execution=1 and provisional credit of 0.001 test GEN. It is not FINALIZED; the independently checked finalized tip remains the earlier withdrawal. Earliest eligibility is not proof or a guarantee of actual finalization. The prepared challenge is not submitted; CDC funding and acceptance have not started. Resume this transaction; do not deposit again.",
+  "earlierObservation": {
+    "observedAt": "2026-10-19T22:13:18.740Z",
+    "status": "COMMITTING",
+    "votesCommitted": "4"
+  },
+  "acceptedLedger": {
+    "state": "accepted",
+    "stats": {
+      "count": "0",
+      "locked": "0",
+      "owed": "1000000000000000",
+      "scope": "testnet-prototype",
+      "version": "event-duels/0.2.0"
+    },
+    "senderCreditWei": "1000000000000000"
+  },
+  "finalizedRead": {
+    "state": "finalized",
+    "error": "此合约还有尚未最终确认的交易。请等待，或选择「共识已接受」查看临时数据。"
+  },
+  "transactionTips": {
+    "accepted": {
+      "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 5
+    },
+    "finalized": {
+      "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 7
+    }
+  },
+  "externalContractBalanceWei": "1000000000000000",
+  "earliestFinalizationEligibilityUnix": "1792450000",
+  "earliestFinalizationEligibilityUtc": "2026-10-19T22:46:40.000Z"
 }

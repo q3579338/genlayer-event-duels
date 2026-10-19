@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T21:50:16.089Z",
+  "observedAt": "2026-10-19T22:18:44.805Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -15,36 +15,29 @@
   "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
   "sourceMatchesCandidate": true,
   "deploymentFinalizedAndSourceVerified": true,
-  "finalizedSourceReady": true,
+  "finalizedSourceReady": false,
   "states": [
     {
       "state": "accepted",
       "stats": {
         "count": "0",
         "locked": "0",
-        "owed": "0",
+        "owed": "1000000000000000",
         "scope": "testnet-prototype",
         "version": "event-duels/0.2.0"
       },
-      "senderCreditWei": "0"
+      "senderCreditWei": "1000000000000000"
     },
     {
       "state": "finalized",
-      "stats": {
-        "count": "0",
-        "locked": "0",
-        "owed": "0",
-        "scope": "testnet-prototype",
-        "version": "event-duels/0.2.0"
-      },
-      "senderCreditWei": "0"
+      "error": "此合约还有尚未最终确认的交易。请等待，或选择「共识已接受」查看临时数据。"
     }
   ],
   "transactionTips": {
     "accepted": {
-      "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
+      "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 7
+      "status": 5
     },
     "finalized": {
       "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
@@ -52,6 +45,6 @@
       "status": 7
     }
   },
-  "externalBalanceWei": "0",
+  "externalBalanceWei": "1000000000000000",
   "limitation": "Read-only deployment and ledger snapshot. Later actions require their own finalized successful receipts. A gen_call status label alone returned provisional credit; finalized reads are now guarded by on-chain transaction pointers before and after reading. This is not live duel, AI consensus or external payout proof. Latest EVM balance is separate from the Intelligent Contract ledger."
 }
