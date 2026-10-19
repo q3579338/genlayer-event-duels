@@ -10,6 +10,7 @@
 - 2026-10-19 19:40（北京时间）只读回执为 ACCEPTED / FINISHED_WITH_RETURN，sender 为用户已连接钱包；接受状态 `get_stats` 版本 `event-duels/0.2.0`，count、locked、owed 均为 0。最终状态尚不存在。
 - 20:02:54 再次只读核对已为 FINALIZED / FINISHED_WITH_RETURN，`--require-finalized` 通过。接受与最终状态 count、locked、owed、用户额度和 EVM 余额均为 0。Chrome 自动恢复部署记录、载入新地址并显示源码核对通过。尚无实际充值和外部提取到账证明。
 - 20:21 首笔独立充值已 ACCEPTED / FINISHED_WITH_RETURN，用户接受状态额度和合约余额均为 0.001 test GEN。见 [deposit-live-audit.json](../public/deposit-live-audit.json)。该笔充值尚未最终确认，提现未发送。发现节点的 finalized 读取标签仍返回未最终确认额度，已加入独立共识交易指针检查；不能把读取标签、EVM 成功或资格时间当作充值最终成功。
+- 20:45 充值已最终确认，受保护最终读取核对额度通过；随后同一 888 钱包确认原路提现。提现已 ACCEPTED / execution=1，消息收款人为该 888 钱包、金额为 0.001 test GEN、仅最终确认后处理。接受状态额度归零而外部余额仍为同额，实际到账尚未证明，见 [withdraw-live-audit.json](../public/withdraw-live-audit.json)。
 - 链上源码全文与 `contracts/candidates/EventDuels.py` 一致，SHA256 `041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb`；源码提交 `6f8ec900b265fc758e7569b46b1b2cb364e6f6b6`。
 - 新版先独立 `deposit()` 记额度，创建和接受从已有额度锁定、附带金额 0。必须先完成最小充值和提取的外部到账核对，再继续双钱包挑战。
 - 不重复部署。网络最终确认后，在原页面选择「继续查询最终状态」，前端才会验证并载入新地址。链上确认时长由实际网络状态决定，不假定固定等待时间。

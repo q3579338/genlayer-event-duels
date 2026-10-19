@@ -1,13 +1,13 @@
 {
-  "observedAt": "2026-10-19T12:21:28.927Z",
+  "observedAt": "2026-10-19T12:45:02.244Z",
   "network": "Bradbury",
   "chainId": 4221,
   "action": "deposit",
   "transactionId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
   "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
-  "status": "ACCEPTED",
-  "statusCode": 5,
+  "status": "FINALIZED",
+  "statusCode": 7,
   "executionResult": 1,
   "executionResultName": "FINISHED_WITH_RETURN",
   "submission": {
@@ -38,15 +38,28 @@
     "accepted": {
       "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 5
+      "status": 7
     },
     "finalized": {
-      "txId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+      "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
       "status": 7
     }
   },
   "earliestFinalizationObservedUnix": "1792413845",
-  "nextStep": "Wait for a successful finalized deposit receipt, then request a separate user-confirmed withdraw and verify the external payout.",
-  "limitation": "Accepted credit is provisional. Read-only status labels alone are not finality proof. No withdrawal or external payout has been performed; recovery of the legacy failed deposit remains unverified."
+  "nextStep": "A separate user-confirmed withdrawal has been submitted; verify its actual finality and external payout.",
+  "limitation": "Deposit finality and credit are proven at the recorded time. The separate withdrawal and external payout are not proven by this deposit record.",
+  "finalizedState": {
+    "state": "finalized",
+    "stats": {
+      "count": "0",
+      "locked": "0",
+      "owed": "1000000000000000",
+      "scope": "testnet-prototype",
+      "version": "event-duels/0.2.0"
+    },
+    "senderCreditWei": "1000000000000000"
+  },
+  "recordUpdatedAt": "2026-10-19T12:51:10.307Z",
+  "withdrawTransactionId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73"
 }

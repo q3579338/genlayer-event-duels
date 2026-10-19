@@ -1,0 +1,34 @@
+{
+  "observedAt": "2026-10-19T12:49:30.638Z",
+  "transactionId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
+  "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+  "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+  "status": "ACCEPTED",
+  "statusCode": 5,
+  "executionResult": 1,
+  "messages": [
+    {
+      "messageType": 0,
+      "recipient": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+      "value": "1000000000000000",
+      "data": "0x",
+      "onAcceptance": false,
+      "saltNonce": "0"
+    }
+  ],
+  "submission": {
+    "evmTransaction": "0xd0e85dd23201d3812194f7136e1f5e4680501ee8154e287eef14b42b67e3d4c7",
+    "chainId": 4221,
+    "from": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+    "to": "0x0112bf6e83497965a5fdd6dad1e447a6e004271d",
+    "valueWei": "0",
+    "status": "success",
+    "method": "addTransaction",
+    "innerRecipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+    "gasUsed": "795421",
+    "effectiveGasPrice": "187500000"
+  },
+  "externalContractBalanceWei": "1000000000000000",
+  "earliestFinalizationObservedUnix": "1792415857",
+  "limitation": "The finalized deposit is proven. This withdrawal is only ACCEPTED; its external message has not been confirmed executed and no external payout is claimed."
+}

@@ -1,5 +1,13 @@
 # 验证记录
 
+## 2026-10-19 · 888 充值最终确认，原路提现已接受
+
+20:45 首笔充值 `0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7` 已 FINALIZED / execution=1。独立共识 accepted/finalized 指针均为这笔最终充值；受保护的最终读取确认 888 钱包额度与 owed 为 1000000000000000 wei，外部合约余额同额，locked/count 为 0。
+
+随后同一 888 钱包确认 `withdraw()`，交易 `0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73`。20:48 回执为 ACCEPTED / execution=1，外部消息的 recipient 明确为 `0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888`，value=1000000000000000 wei，onAcceptance=false。EVM 提交 `0xd0e85dd23201d3812194f7136e1f5e4680501ee8154e287eef14b42b67e3d4c7` 附带 value=0，795421 gas × 187500000 wei = 149141437500000 wei 网络费，与本地保存的钱包余额变化相符。
+
+20:49 接受状态额度与 owed 已为 0，但合约外部余额仍为 0.001 test GEN；最终读取保护因提现尚待确认而拒绝展示最终余额。因此不能把额度归零、父交易接受或执行成功当作外部到账。节点返回的本次最早最终确认资格为北京时间 21:17:37，仍须实际最终回执、外部转账和余额核对。见 [withdraw-live-audit.json](../public/withdraw-live-audit.json)。存取闭环尚未完成，Explorer 保留草稿。
+
 ## 2026-10-19 · 首笔独立充值与最终读取保护
 
 首笔真实 `deposit()`：`0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7`，20:21 核对为 ACCEPTED / FINISHED_WITH_RETURN。EVM 提交 `0x5b1c262deee01f279c73a14945c0945c709cee298317320a8fbf638ac0e5b6d3` 的 chainId=4221、value=1000000000000000 wei，inner recipient 为新候选。接受状态中 owed 与用户额度均为同额，locked/count 为 0，外部合约余额同额。尚未最终确认，不计作完成存取闭环；最早最终确认资格时间由节点返回为北京时间 20:44:05，仍须实际 FINALIZED 状态。

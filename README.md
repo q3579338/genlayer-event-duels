@@ -6,7 +6,7 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 
 **[打开公开演示](https://q3579338.github.io/genlayer-event-duels/)** · [操作图解与验证](https://q3579338.github.io/genlayer-event-duels/review.html) · [自动检查](https://github.com/q3579338/genlayer-event-duels/actions/workflows/ci.yml) · [部署说明](docs/DEPLOYMENT.md)
 
-**2026-10-19 实测发现旧部署写入失败，已暂停旧版新写操作。** 0.001 test GEN 到达旧合约 EVM 余额，但创建未成功、内部额度未登记，回收尚未验证。前端 v0.2.0 改为独立充值：先充值，再用既有额度创建／接受，后两步不再附带原生转账。新候选已最终确认，执行成功、源码全文匹配，最终状态可读；首笔 0.001 test GEN 充值已 ACCEPTED 并登记额度，尚待最终确认和真实提取验收。详见 [候选部署记录](docs/candidate-deployment.json)和[候选说明](contracts/candidates/README.md)。MetaMask 的网站告警尚未查明来源，不能据本地检查认定为误报。
+**2026-10-19 实测发现旧部署写入失败，已暂停旧版新写操作。** 0.001 test GEN 到达旧合约 EVM 余额，但创建未成功、内部额度未登记，回收尚未验证。前端 v0.2.0 改为独立充值：先充值，再用既有额度创建／接受，后两步不再附带原生转账。新候选已最终确认，执行成功、源码全文匹配，最终状态可读；首笔 0.001 test GEN 充值已最终确认并登记额度，原路提现请求已 ACCEPTED，实际外部到账待核对。详见 [候选部署记录](docs/candidate-deployment.json)和[候选说明](contracts/candidates/README.md)。MetaMask 的网站告警尚未查明来源，不能据本地检查认定为误报。
 
 **旧 Bradbury 合约（只读）：** [`0x3cE9F1A0143f77405784F47Aa56467013c3846E9`](https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9) · [旧部署交易](https://explorer-bradbury.genlayer.com/tx/0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90)
 
@@ -24,7 +24,7 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - 钱包、网络、合约切换时失效旧读取，避免迟到请求显示旧账户额度。
 - MIT 开源；12 项旧合约状态测试、8 项充值候选测试、15 项交易与恢复测试、TypeScript 检查、生产构建。
 
-**验证边界：旧 0.1.0 部署已最终确认，但真实创建调用最终执行失败；新 0.2.0 候选部署为 FINALIZED / FINISHED_WITH_RETURN，源码全文匹配，最终状态可读。** 首笔独立充值已接受并登记额度；充值最终确认、挑战交易、AI 裁决和外部到账仍未通过完整验收。详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
+**验证边界：旧 0.1.0 部署已最终确认，但真实创建调用最终执行失败；新 0.2.0 候选部署为 FINALIZED / FINISHED_WITH_RETURN，源码全文匹配，最终状态可读。** 首笔独立充值已最终确认并登记额度，原路提现请求已接受；提现最终确认、外部到账、挑战交易和 AI 裁决仍未通过完整验收。详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
 
 ## 为什么使用 GenLayer
 

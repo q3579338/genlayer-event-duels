@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T12:20:34.966Z",
+  "observedAt": "2026-10-19T12:49:36.937Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -22,11 +22,11 @@
       "stats": {
         "count": "0",
         "locked": "0",
-        "owed": "1000000000000000",
+        "owed": "0",
         "scope": "testnet-prototype",
         "version": "event-duels/0.2.0"
       },
-      "senderCreditWei": "1000000000000000"
+      "senderCreditWei": "0"
     },
     {
       "state": "finalized",
@@ -35,12 +35,12 @@
   ],
   "transactionTips": {
     "accepted": {
-      "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
+      "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
       "status": 5
     },
     "finalized": {
-      "txId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+      "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
       "status": 7
     }
