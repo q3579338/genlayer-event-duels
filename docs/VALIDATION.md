@@ -1,5 +1,15 @@
 # 验证记录
 
+## 2026-10-19 · 首笔独立充值与最终读取保护
+
+首笔真实 `deposit()`：`0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7`，20:21 核对为 ACCEPTED / FINISHED_WITH_RETURN。EVM 提交 `0x5b1c262deee01f279c73a14945c0945c709cee298317320a8fbf638ac0e5b6d3` 的 chainId=4221、value=1000000000000000 wei，inner recipient 为新候选。接受状态中 owed 与用户额度均为同额，locked/count 为 0，外部合约余额同额。尚未最终确认，不计作完成存取闭环；最早最终确认资格时间由节点返回为北京时间 20:44:05，仍须实际 FINALIZED 状态。
+
+发现 RPC `gen_call(status=finalized)` 在充值回执仍为 ACCEPTED 时返回新额度。独立共识数据查询证实最新 accepted 指针是充值交易、最新 finalized 指针仍是部署。因此新增 `withFinalizedRead`：在读取前后从同一 EVM 区块分别取得两种交易指针，要求地址、非零编号及 FINALIZED 状态相符，并且读取期间最终指针不变；否则不显示为最终状态。候选写入资格也增加已最终确认交易的独立证明。节点 `status` 参数继续保留，不能单独作为最终性证据。
+
+35 项本地测试通过：旧合约 12、候选 8、交易与恢复 15。新增 4 项覆盖节点提前返回额度、读取期间状态变化、稳定边界及缺失／其他地址／RPC 错误的证明。生产构建通过。真实只读集成证实候选的待确认充值被拦截、已稳定的旧部署可读取；摘要见 [finality-boundary-validation.json](../public/finality-boundary-validation.json)。首笔充值记录见 [deposit-live-audit.json](../public/deposit-live-audit.json)。提现、外部到账和完整双钱包流程仍未执行。
+
+Chrome 本地生产预览使用独立页面且没有连接钱包：对新候选选择最终确认后，实际显示“此合约还有尚未最终确认的交易”，额度保持未加载、创建和提取不可用；切换回旧部署后最终状态可正常只读加载，旧写操作仍禁用。没有清除正式站点的待确认记录，也没有发起额外资金操作。
+
 ## 2026-10-19 · 0.2.0 部署候选准备
 
 保留旧合约源码和旧部署，新增 `contracts/candidates/EventDuels.py`：独立最小 payable `deposit`；创建和接受改为 nonpayable，从已到账额度锁定。身份按 immediate sender 记账，提现固定给该 sender。前端仅在候选源码全文匹配且部署最终状态可读时开放写入。

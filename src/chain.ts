@@ -1,7 +1,7 @@
 import { abi, createClient } from "genlayer-js";
 import { testnetBradbury } from "genlayer-js/chains";
 import type { CalldataEncodable, TransactionHash } from "genlayer-js/types";
-import { hexToBytes, isAddress, toHex, toRlp, zeroAddress } from "viem";
+import { createPublicClient, http, hexToBytes, isAddress, toHex, toRlp, zeroAddress } from "viem";
 import type { Address } from "viem";
 import type { Duel } from "./model";
 import { VERSION } from "./model";
@@ -10,6 +10,7 @@ import { DEPLOYMENT } from "./deployment";
 import { contractCall } from "./payable";
 import { saveRecord } from "./journal";
 import candidateSource from "../contracts/candidates/EventDuels.py?raw";
+import { asFinalityTip, assertFinalizedTip, withFinalizedRead } from "./finality-read";
 export const CANDIDATE_VERSION = "event-duels/0.2.0";
 
 type Provider = NonNullable<
@@ -25,6 +26,19 @@ export const reader = createClient({ chain });
 // The official L2 endpoint accepts MetaMask's string JSON-RPC request IDs.
 // Keep Intelligent Contract reads on the separate GenLayer RPC above.
 export const WALLET_RPC = "https://rpc.testnet-chain.genlayer.com";
+const consensusReader = createPublicClient({ chain, transport: http(WALLET_RPC, { timeout: 30000 }) });
+async function loadFinalityTips(contract: Address) {
+  const dataContract = chain.consensusDataContract;
+  if (!dataContract) throw new Error("当前网络缺少最终确认查询配置，请稍后重试。");
+  const blockNumber = await consensusReader.getBlockNumber({ cacheTime: 0 });
+  const options = { address: dataContract.address, abi: dataContract.abi,
+    args: [contract], blockNumber } as const;
+  const [accepted, finalized] = await Promise.all([
+    consensusReader.readContract({ ...options, functionName: "getLatestAcceptedTransaction" }),
+    consensusReader.readContract({ ...options, functionName: "getLatestFinalizedTransaction" }),
+  ]);
+  return { accepted: asFinalityTip(accepted), finalized: asFinalityTip(finalized) };
+}
 export async function addWalletRpc(): Promise<void> {
   if (!window.ethereum)
     throw new Error("请在已安装 MetaMask 的 Chrome 中打开页面。");
@@ -91,8 +105,8 @@ export type ReadState = "accepted" | "finalized";
 
 async function readContractState(contract: Address, functionName: string, args: CalldataEncodable[], status: ReadState) {
   // The stable SDK sends transaction_hash_variant, which this node ignores.
-  // Use the node's documented status filter explicitly to avoid treating
-  // accepted state as finalized state.
+  // Use the documented status filter, plus a separate on-chain boundary check
+  // in readDuels. This filter alone returned provisional deposit credit.
   const data = toRlp([
     toHex(abi.calldata.encode(abi.calldata.makeCalldataObject(functionName, args, undefined))),
     "0x00",
@@ -127,25 +141,29 @@ export async function readDuels(contract: Address, wallet: string, state: ReadSt
       throw new Error(`合约部署正在等待最终确认（${receipt.statusName || receipt.status}）。可选择「共识已接受」查看当前数据，无需重新部署。`);
     if (outcome === false) throw new Error("部署交易未成功执行，请检查部署记录。");
   }
-  const read = (functionName: string, args: CalldataEncodable[] = []) =>
-    readContractState(contract, functionName, args, state);
-  const stats = (await read("get_stats")) as { version?: string };
-  if (stats.version !== VERSION && stats.version !== CANDIDATE_VERSION)
-    throw new Error("合约版本不匹配，请使用本仓库的 EventDuels 合约。");
-  let writable = false;
-  if (stats.version === CANDIDATE_VERSION) {
-    await verifyCandidateSource(contract);
-    // Never enable deposits into a deployment proved only in accepted state.
-    try {
-      const final = await readContractState(contract, "get_stats", [], "finalized") as { version?: string };
-      writable = final.version === CANDIDATE_VERSION;
-    } catch { /* Read-only until deployment finality can be established. */ }
-  }
-  const [duels, credit] = await Promise.all([
-    read("list_duels", [0, 50]),
-    wallet ? read("get_credit", [wallet]) : "0",
-  ]);
-  return { duels: duels as unknown as Duel[], credit: String(credit), writable };
+  const load = async () => {
+    const read = (functionName: string, args: CalldataEncodable[] = []) =>
+      readContractState(contract, functionName, args, state);
+    const stats = (await read("get_stats")) as { version?: string };
+    if (stats.version !== VERSION && stats.version !== CANDIDATE_VERSION)
+      throw new Error("合约版本不匹配，请使用本仓库的 EventDuels 合约。");
+    let writable = false;
+    if (stats.version === CANDIDATE_VERSION) {
+      await verifyCandidateSource(contract);
+      // Never enable deposits into a deployment proved only in accepted state.
+      try {
+        assertFinalizedTip(contract, (await loadFinalityTips(contract)).finalized);
+        const final = await readContractState(contract, "get_stats", [], "finalized") as { version?: string };
+        writable = final.version === CANDIDATE_VERSION;
+      } catch { /* Read-only until deployment finality can be established. */ }
+    }
+    const [duels, credit] = await Promise.all([
+      read("list_duels", [0, 50]),
+      wallet ? read("get_credit", [wallet]) : "0",
+    ]);
+    return { duels: duels as unknown as Duel[], credit: String(credit), writable };
+  };
+  return state === "finalized" ? withFinalizedRead(contract, () => loadFinalityTips(contract), load) : load();
 }
 async function verifyCandidateSource(contract: Address) {
   const code = await reader.getContractCode(contract);

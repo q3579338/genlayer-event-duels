@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T12:02:54.062Z",
+  "observedAt": "2026-10-19T12:20:34.966Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -14,31 +14,37 @@
   "identityMatches": true,
   "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
   "sourceMatchesCandidate": true,
-  "finalizedSourceReady": true,
+  "deploymentFinalizedAndSourceVerified": true,
+  "finalizedSourceReady": false,
   "states": [
     {
       "state": "accepted",
       "stats": {
         "count": "0",
         "locked": "0",
-        "owed": "0",
+        "owed": "1000000000000000",
         "scope": "testnet-prototype",
         "version": "event-duels/0.2.0"
       },
-      "senderCreditWei": "0"
+      "senderCreditWei": "1000000000000000"
     },
     {
       "state": "finalized",
-      "stats": {
-        "count": "0",
-        "locked": "0",
-        "owed": "0",
-        "scope": "testnet-prototype",
-        "version": "event-duels/0.2.0"
-      },
-      "senderCreditWei": "0"
+      "error": "此合约还有尚未最终确认的交易。请等待，或选择「共识已接受」查看临时数据。"
     }
   ],
-  "externalBalanceWei": "0",
-  "limitation": "Read-only deployment and ledger snapshot. No independent live deposit, duel, AI consensus or external payout is proven. Latest EVM balance is separate from the Intelligent Contract ledger."
+  "transactionTips": {
+    "accepted": {
+      "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 5
+    },
+    "finalized": {
+      "txId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 7
+    }
+  },
+  "externalBalanceWei": "1000000000000000",
+  "limitation": "Read-only deployment and ledger snapshot. Later actions require their own finalized successful receipts. A gen_call status label alone returned provisional credit; finalized reads are now guarded by on-chain transaction pointers before and after reading. This is not live duel, AI consensus or external payout proof. Latest EVM balance is separate from the Intelligent Contract ledger."
 }

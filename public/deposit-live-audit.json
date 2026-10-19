@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-10-19T12:21:28.927Z",
+  "network": "Bradbury",
+  "chainId": 4221,
+  "action": "deposit",
+  "transactionId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
+  "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+  "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+  "status": "ACCEPTED",
+  "statusCode": 5,
+  "executionResult": 1,
+  "executionResultName": "FINISHED_WITH_RETURN",
+  "submission": {
+    "evmTransaction": "0x5b1c262deee01f279c73a14945c0945c709cee298317320a8fbf638ac0e5b6d3",
+    "chainId": 4221,
+    "from": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+    "to": "0x0112bf6e83497965a5fdd6dad1e447a6e004271d",
+    "valueWei": "1000000000000000",
+    "status": "success",
+    "method": "addTransaction",
+    "innerRecipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+    "gasUsed": "844210",
+    "effectiveGasPrice": "173499750"
+  },
+  "acceptedState": {
+    "state": "accepted",
+    "stats": {
+      "count": "0",
+      "locked": "0",
+      "owed": "1000000000000000",
+      "scope": "testnet-prototype",
+      "version": "event-duels/0.2.0"
+    },
+    "senderCreditWei": "1000000000000000"
+  },
+  "externalContractBalanceWei": "1000000000000000",
+  "transactionTips": {
+    "accepted": {
+      "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 5
+    },
+    "finalized": {
+      "txId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 7
+    }
+  },
+  "earliestFinalizationObservedUnix": "1792413845",
+  "nextStep": "Wait for a successful finalized deposit receipt, then request a separate user-confirmed withdraw and verify the external payout.",
+  "limitation": "Accepted credit is provisional. Read-only status labels alone are not finality proof. No withdrawal or external payout has been performed; recovery of the legacy failed deposit remains unverified."
+}

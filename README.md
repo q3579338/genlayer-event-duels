@@ -6,7 +6,7 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 
 **[打开公开演示](https://q3579338.github.io/genlayer-event-duels/)** · [操作图解与验证](https://q3579338.github.io/genlayer-event-duels/review.html) · [自动检查](https://github.com/q3579338/genlayer-event-duels/actions/workflows/ci.yml) · [部署说明](docs/DEPLOYMENT.md)
 
-**2026-10-19 实测发现旧部署写入失败，已暂停旧版新写操作。** 0.001 test GEN 到达旧合约 EVM 余额，但创建未成功、内部额度未登记，回收尚未验证。前端 v0.2.0 改为独立充值：先充值，再用既有额度创建／接受，后两步不再附带原生转账。新候选已最终确认，执行成功、源码全文匹配，最终状态可读；真实存取尚待验收。详见 [候选部署记录](docs/candidate-deployment.json)和[候选说明](contracts/candidates/README.md)。MetaMask 的网站告警尚未查明来源，不能据本地检查认定为误报。
+**2026-10-19 实测发现旧部署写入失败，已暂停旧版新写操作。** 0.001 test GEN 到达旧合约 EVM 余额，但创建未成功、内部额度未登记，回收尚未验证。前端 v0.2.0 改为独立充值：先充值，再用既有额度创建／接受，后两步不再附带原生转账。新候选已最终确认，执行成功、源码全文匹配，最终状态可读；首笔 0.001 test GEN 充值已 ACCEPTED 并登记额度，尚待最终确认和真实提取验收。详见 [候选部署记录](docs/candidate-deployment.json)和[候选说明](contracts/candidates/README.md)。MetaMask 的网站告警尚未查明来源，不能据本地检查认定为误报。
 
 **旧 Bradbury 合约（只读）：** [`0x3cE9F1A0143f77405784F47Aa56467013c3846E9`](https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9) · [旧部署交易](https://explorer-bradbury.genlayer.com/tx/0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90)
 
@@ -22,9 +22,9 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - Bradbury 连接：默认填入实际合约地址，可选择共识接受 / 最终确认的读取状态。通过 `genlayer-js` 连接钱包、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
 - 测试网交易记录：保留钱包、交易哈希、精确 wei 金额和最新原始回执；可导出或直接查看 JSON。浏览器存储失败时仍显示已广播哈希，不误导用户重复发送。
 - 钱包、网络、合约切换时失效旧读取，避免迟到请求显示旧账户额度。
-- MIT 开源；12 项旧合约状态测试、8 项充值候选测试、11 项交易与恢复测试、TypeScript 检查、生产构建。
+- MIT 开源；12 项旧合约状态测试、8 项充值候选测试、15 项交易与恢复测试、TypeScript 检查、生产构建。
 
-**验证边界：旧 0.1.0 部署已最终确认，但真实创建调用最终执行失败；新 0.2.0 候选部署为 FINALIZED / FINISHED_WITH_RETURN，源码全文匹配，最终状态可读。** 真实独立充值、挑战交易、AI 裁决和外部到账均未通过完整验收。详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
+**验证边界：旧 0.1.0 部署已最终确认，但真实创建调用最终执行失败；新 0.2.0 候选部署为 FINALIZED / FINISHED_WITH_RETURN，源码全文匹配，最终状态可读。** 首笔独立充值已接受并登记额度；充值最终确认、挑战交易、AI 裁决和外部到账仍未通过完整验收。详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
 
 ## 为什么使用 GenLayer
 
@@ -96,7 +96,7 @@ npm run check:ai-smoke
 - `npm run check:deploy`：通过 Bradbury 的只读 `gen_call` 执行构造函数，检查实际运行时兼容性，不签名、不广播交易。
 - `npm run check:live`：核对真实部署最终回执、链上源码全文与仓库一致，并读取最终状态；产物 `artifacts/live-audit.json`。公开快照见 [live-audit.json](public/live-audit.json)。不发送写交易。
 - `npm run check:candidate`：远程检查候选 payable/nonpayable 接口、构造函数，并执行带模拟 value 的充值／创建／取消／提现场景；这是只读模拟，不广播或证明真实到账。
-- `npm run check:candidate-live`：只读核对新候选部署回执、源码、接受／最终状态额度和 EVM 余额；未最终确认时明确输出 `finalizedSourceReady=false`。使用 `npm run check:candidate-live -- --require-finalized` 可要求最终状态必须通过；不签名、不广播。
+- `npm run check:candidate-live`：只读核对新候选部署回执、源码、接受／最终状态额度和 EVM 余额；当前最终状态无法安全核实（包括后续充值仍待确认）时输出 `finalizedSourceReady=false`，部署本身的最终状态另列。使用 `npm run check:candidate-live -- --require-finalized` 可要求最终状态必须通过；不签名、不广播。
 - `npm run check:ai-smoke`：给构造函数注入明确标注的 ACTIVE 挑战、余额和测试时间，实际读取公开 GitHub Release 并调用 GenVM AI，检查 YES、记录证据和胜方额度；每次保留独立产物。首次返回 UNKNOWN、后续两次通过，不能据此估计可靠性。不是已签名挑战、多验证者共识或实际转账；[记录](public/ai-smoke.json)。
 - 可选：安装 `genvm-lint==0.11.0` 后运行 `genvm-lint check contracts/EventDuels.py`。Windows 控制台若编码异常，设置 `PYTHONIOENCODING=utf-8`。
 

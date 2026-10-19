@@ -3,11 +3,23 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { createClient, abi } from "genlayer-js";
 import { testnetBradbury } from "genlayer-js/chains";
-import { hexToBytes, toHex, toRlp, zeroAddress } from "viem";
+import { createPublicClient, http, hexToBytes, toHex, toRlp, zeroAddress } from "viem";
+import { asFinalityTip, withFinalizedRead } from "../src/finality-read.ts";
 
 const root = new URL("../", import.meta.url);
 const manifest = JSON.parse(await readFile(new URL("docs/candidate-deployment.json", root), "utf8"));
 const client = createClient({ chain: testnetBradbury });
+const evm = createPublicClient({ transport: http("https://rpc.testnet-chain.genlayer.com") });
+async function loadTips() {
+  const blockNumber = await evm.getBlockNumber({ cacheTime: 0 });
+  const options = { address: testnetBradbury.consensusDataContract.address,
+    abi: testnetBradbury.consensusDataContract.abi, args: [manifest.address], blockNumber };
+  const [accepted, finalized] = await Promise.all([
+    evm.readContract({ ...options, functionName: "getLatestAcceptedTransaction" }),
+    evm.readContract({ ...options, functionName: "getLatestFinalizedTransaction" }),
+  ]);
+  return { accepted: asFinalityTip(accepted), finalized: asFinalityTip(finalized) };
+}
 const [receipt, source, expected] = await Promise.all([
   client.getTransaction({ hash: manifest.transactionId }),
   client.getContractCode(manifest.address),
@@ -33,11 +45,11 @@ async function read(method, args, status) {
   const decoded = abi.calldata.decode(hexToBytes(encoded.startsWith("0x") ? encoded : `0x${encoded}`));
   return decoded instanceof Map ? Object.fromEntries(decoded) : decoded;
 }
-const stateResults = await Promise.allSettled(["accepted", "finalized"].map(async (state) => ({
-  state,
-  stats: await read("get_stats", [], state),
-  senderCreditWei: await read("get_credit", [manifest.sender], state),
-})));
+const stateResults = await Promise.allSettled(["accepted", "finalized"].map(async (state) => {
+  const load = async () => ({ state, stats: await read("get_stats", [], state),
+    senderCreditWei: await read("get_credit", [manifest.sender], state) });
+  return state === "finalized" ? withFinalizedRead(manifest.address, loadTips, load) : load();
+}));
 const states = stateResults.map((result, index) => result.status === "fulfilled" ? result.value : ({
   state: ["accepted", "finalized"][index], error: result.reason.message,
 }));
@@ -48,16 +60,19 @@ const sourceMatchesCandidate = normalized(source) === normalized(expected) && so
 const identityMatches = receipt.recipient.toLowerCase() === manifest.address.toLowerCase()
   && receipt.sender.toLowerCase() === manifest.sender.toLowerCase();
 const finalizedRead = states.find((state) => state.state === "finalized");
+const tips = await loadTips();
 const audit = {
   observedAt: new Date().toISOString(), network: manifest.network, chainId: manifest.walletChainId,
   contract: manifest.address, transactionId: manifest.transactionId,
   deployment: { status: receipt.status, statusName: receipt.statusName,
     executionResult: receipt.txExecutionResult, executionResultName: receipt.txExecutionResultName },
   sender: receipt.sender, identityMatches, sourceSha256, sourceMatchesCandidate,
+  deploymentFinalizedAndSourceVerified: identityMatches && sourceMatchesCandidate && Number(receipt.status) === 7
+    && receipt.txExecutionResult === 1,
   finalizedSourceReady: identityMatches && sourceMatchesCandidate && Number(receipt.status) === 7
     && receipt.txExecutionResult === 1 && finalizedRead?.stats?.version === manifest.version,
-  states, externalBalanceWei: String(BigInt(native)),
-  limitation: "Read-only deployment and ledger snapshot. No independent live deposit, duel, AI consensus or external payout is proven. Latest EVM balance is separate from the Intelligent Contract ledger.",
+  states, transactionTips: tips, externalBalanceWei: String(BigInt(native)),
+  limitation: "Read-only deployment and ledger snapshot. Later actions require their own finalized successful receipts. A gen_call status label alone returned provisional credit; finalized reads are now guarded by on-chain transaction pointers before and after reading. This is not live duel, AI consensus or external payout proof. Latest EVM balance is separate from the Intelligent Contract ledger.",
 };
 await mkdir(new URL("artifacts/", root), { recursive: true });
 const json = JSON.stringify(audit, (_, value) => typeof value === "bigint" ? String(value)

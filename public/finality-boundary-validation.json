@@ -1,0 +1,45 @@
+{
+  "observedAt": "2026-10-19T12:19:31.443Z",
+  "checks": [
+    {
+      "name": "candidate",
+      "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "readInvoked": false,
+      "tips": {
+        "accepted": {
+          "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
+          "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+          "status": 5
+        },
+        "finalized": {
+          "txId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+          "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+          "status": 7
+        }
+      },
+      "error": "此合约还有尚未最终确认的交易。请等待，或选择「共识已接受」查看临时数据。",
+      "expected": "block pending deposit from finalized-labelled read",
+      "success": true
+    },
+    {
+      "name": "legacy",
+      "contract": "0x3cE9F1A0143f77405784F47Aa56467013c3846E9",
+      "readInvoked": true,
+      "tips": {
+        "accepted": {
+          "txId": "0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512",
+          "recipient": "0x3cE9F1A0143f77405784F47Aa56467013c3846E9",
+          "status": 7
+        },
+        "finalized": {
+          "txId": "0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512",
+          "recipient": "0x3cE9F1A0143f77405784F47Aa56467013c3846E9",
+          "status": 7
+        }
+      },
+      "expected": "permit stable finalized legacy boundary",
+      "success": true
+    }
+  ],
+  "limitation": "Read-only consensus boundary verification, not a fund transfer or historical state proof."
+}
