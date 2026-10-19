@@ -43,3 +43,15 @@ test("timeout or RPC error never fabricates a successful result", async () => {
   }), /不要重复发送/);
   await assert.rejects(waitForOutcome(async () => { throw new Error("offline"); }), /offline/);
 });
+test("accepted execution errors are visible before finality without clearing pending state", async () => {
+  const receipts = [
+    { status: 5, statusName: "ACCEPTED", txExecutionResult: 2 },
+    { status: 7, statusName: "FINALIZED", txExecutionResult: 2 },
+  ];
+  assert.equal(finalOutcome(receipts[0]), null);
+  const progress = [];
+  assert.equal(await waitForOutcome(async () => receipts.shift(), {
+    attempts: 2, interval: 0, onProgress: (message) => progress.push(message),
+  }), false);
+  assert.match(progress[0], /ACCEPTED.*执行出错/);
+});

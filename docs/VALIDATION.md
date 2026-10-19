@@ -2,6 +2,12 @@
 
 ## 2026-10-19 · 前端 v0.1.1
 
+真实创建调用已广播：`0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512`。当前为 ACCEPTED / FINISHED_WITH_ERROR，调试 trace 返回 `Use a directly connected testnet wallet`。节点 receipt 的 sender 与 txOrigin 均为用户已连接钱包，但实际 GenVM 地址比较仍失败，完整原因尚未证实。没有成功创建挑战，不计作端到端通过。
+
+对应 EVM 广播交易为 `0xa232563b3c8cfb6655e20ffddb00698d44a487d75797fd41081856b3adf19a30`：chainId=4221，value=1000000000000000 wei，调用当前固定 SDK 的 ConsensusMain `addTransaction`，内部 recipient 是实际 EventDuels。旧合约 EVM 余额已读到 0.001 test GEN；该笔创建失败，没有相应挑战或可提取额度，回收尚未验证。已暂停新写操作，后续应先修正资金接收流程。
+
+MetaMask 显示网站恶意告警。线上 JS/CSS 与本地产物哈希相同；生产依赖 `npm audit --omit=dev` 未报告已知漏洞；MetaMask 公共列表没有当前域名及其父域的直接命中。这些检查不能排除其他供应商名单、交易分析、模糊匹配或其他风险，不能据此判定误报。没有关闭或自动绕过钱包安全提醒。
+
 - `npm test`：12 项合约状态测试 + 8 项交易与恢复测试通过。新增 UNKNOWN 五分钟重试边界、精确退款时间边界、双边分别提取、证据异常回滚、不可用证据不进入 AI，以及迟到读取失效和记录存储故障恢复检查。
 - `npm run check:schema`：远程 GenVM 仍识别全部 10 个公开方法。
 - `npm run check:deploy`：只读构造函数模拟通过，没有签名或广播。

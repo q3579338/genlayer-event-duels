@@ -26,7 +26,8 @@ export async function waitForOutcome(
   for (let i = 0; i < attempts; i++) {
     const receipt = await read();
     status = receipt.statusName || String(receipt.status ?? "未知");
-    onProgress?.(status);
+    onProgress?.(receipt.txExecutionResult !== undefined && receipt.txExecutionResult > 1
+      ? `${status}（当前执行出错，仍需核对最终状态）` : status);
     const outcome = finalOutcome(receipt);
     if (outcome !== null) return outcome;
     if (i + 1 < attempts)

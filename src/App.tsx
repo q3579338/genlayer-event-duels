@@ -90,7 +90,7 @@ export default function App() {
   const duels = isDemo ? demo.duels : liveDuels;
   const balance = isDemo ? demo.credits[persona] || "0" : credit;
   const duel = duels.find((d) => d.id === selected);
-  const disabled = busy || (!isDemo && (!ready || !wallet || !!pending));
+  const disabled = busy || (!isDemo && (!ready || !wallet || !!pending || DEPLOYMENT.writesPaused));
   useEffect(() => {
     localStorage.setItem(DEMO_KEY, JSON.stringify(demo));
   }, [demo]);
@@ -169,6 +169,8 @@ export default function App() {
     args: CalldataEncodable[] = [],
     value = 0n,
   ) {
+    if (DEPLOYMENT.writesPaused)
+      throw new Error("当前部署的写操作未通过实测，暂时停用；已有交易仍可继续查询。");
     if (!ready || !wallet || pending)
       throw new Error("请先连接合约、钱包，并处理已有交易。");
     const p = await send(address(contract), wallet, action, args, value);
@@ -420,7 +422,7 @@ export default function App() {
             </p>
             <button
               className="primary"
-              disabled={!isDemo && !ready}
+              disabled={!isDemo && (!ready || DEPLOYMENT.writesPaused)}
               onClick={() => setShowCreate(true)}
             >
               发起一个挑战 <ArrowUpRight size={18} />
@@ -481,6 +483,9 @@ export default function App() {
         </div>
         {!isDemo && (
           <section className="connection">
+            {DEPLOYMENT.writesPaused && <div className="error">
+              当前部署的创建操作未通过真实测试，已暂停新的写操作。已有交易仍可查询，演示与只读功能可继续使用。
+            </div>}
             <div>
               <strong>连接合约</strong>
               <p>仅支持 Bradbury（4221）。Studio 模拟器地址不能在此使用。</p>
@@ -711,7 +716,7 @@ export default function App() {
             ))}
             <button
               className="new-card"
-              disabled={!isDemo && !ready}
+              disabled={!isDemo && (!ready || DEPLOYMENT.writesPaused)}
               onClick={() => setShowCreate(true)}
             >
               <span>

@@ -13,6 +13,8 @@ function outcome(record: TransactionRecord) {
     const result = finalOutcome(record.receipt);
     if (result === false) return "执行未成功";
     if (result === true) return record.action === "withdraw" ? "请求执行成功 · 到账待核对" : "最终确认 · 执行成功";
+    if (record.receipt.txExecutionResult !== undefined && record.receipt.txExecutionResult > 1)
+      return `${record.receipt.statusName || record.receipt.status} · 当前执行出错，仍待最终确认`;
     return `${record.receipt.statusName || record.receipt.status || "等待网络"} · 尚未最终确认`;
   } catch { return "回执信息不完整 · 待核对"; }
 }
