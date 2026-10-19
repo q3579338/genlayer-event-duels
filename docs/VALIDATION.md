@@ -1,5 +1,11 @@
 # 验证记录
 
+## 2026-10-20 · 创建 #1 最终确认，CDC 充值请求待签名
+
+创建 `0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7` 已 FINALIZED / execution=1。实际最终确认时间为北京时间 07:33:38，EVM `0x2702e12933120e5b0aeb8aef0a74c7c611ec738d0fc7f1601b937e77a76c68a8`，区块 25555968。07:34:35 的独立读取在前后核对同一合约的 accepted/finalized 指针相同且均为此最终创建，同时再次验证完整源码 SHA256。最终挑战 #1 为 OPEN、creator=888、opponent 为空，stake/locked=1000000000000000 wei，双方可用额度与 owed 均为 0，count=1。六个参数和附带 value=0 与已签名标准相符。见 [最终创建证明](../public/dual-wallet-create-finalized.json)。
+
+用户完成账户选择后，网页明确显示 CDC 完整地址，最终状态加载通过。签名前只读余额为 100 test GEN、nonce=0，额度为 0。已用网页请求独立 deposit 0.001 test GEN，停在钱包签名处；没有手动代签或重复发送，尚无观察到的充值 hash，也未发起接受。接受仍须等待 CDC 此笔充值最终到账。此次只更新链上证据与材料，没有修改合约或重部署。
+
 ## 2026-10-20 · 显式更换网站连接账户
 
 用户在 MetaMask 首页切换 CDC 后，网页重新连接仍返回 888，因此增加独立的「更换账户」入口，按 [MetaMask 官方账户权限接口](https://docs.metamask.io/metamask-connect/evm/reference/json-rpc-api/wallet_requestPermissions/) 重新请求 eth_accounts，并由用户在钱包中选择此网站使用的账户。普通连接不重开权限；更换前清空当前钱包和可写状态，拒绝后不沿用旧账户。历史区块、当前首账户、网络和源码检查保持执行，已有 pending 和交易历史保留。此入口不会请求签名或发送交易。

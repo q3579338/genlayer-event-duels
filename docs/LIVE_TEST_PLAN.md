@@ -1,12 +1,14 @@
 # Bradbury 双钱包验收计划
 
-本计划截至 2026-10-20 已完成候选部署、首笔 0.001 test GEN 充值、原路提现最终确认和实际到账 888。为双钱包测试追加的 888 独立充值也已最终确认，随后已签名创建挑战 #1，当前等待该创建的最终确认。双钱包完整验收仍待执行。CDC 资金与 888 额度独立；不要重复已完成的充值或提现。先选中经历史区块核对的官方钱包 RPC `https://zksync-os-testnet-genlayer.zksync.dev`；通用 L2 域名目前返回不同历史。未执行的步骤不能填作通过。
+本计划截至 2026-10-20 已完成候选部署、首笔 0.001 test GEN 充值、原路提现最终确认和实际到账 888。为双钱包测试追加的 888 独立充值也已最终确认，随后创建的挑战 #1 也已最终确认。CDC 已实际连接，独立充值请求已打开，等待用户签名。双钱包完整验收仍待执行。CDC 资金与 888 额度独立；不要重复已完成的充值或提现。先选中经历史区块核对的官方钱包 RPC `https://zksync-os-testnet-genlayer.zksync.dev`；通用 L2 域名目前返回不同历史。未执行的步骤不能填作通过。
 
 ## 2026-10-20 双钱包执行进度
 
+**最新结果：创建已于北京时间 07:33:38 最终确认。** 回执 FINALIZED / execution=1，最终确认 EVM `0x2702e12933120e5b0aeb8aef0a74c7c611ec738d0fc7f1601b937e77a76c68a8`，区块 25555968，成功回执。07:34:35 受保护的最终读取核对挑战 #1 为 OPEN、creator=888、opponent 为空、stake/locked=1000000000000000 wei，双方可用额度均为 0，owed=0，完整源码匹配。CDC 已通过网站新账户选择入口实际连接，钱包余额 100 test GEN、nonce=0；独立 0.001 充值请求已发起，当前等待用户签名，没有观察到该充值编号。尚未接受挑战。见 [最终创建证明](../public/dual-wallet-create-finalized.json)。下方 ACCEPTED 是此前过程记录。
+
 **888 充值已最终确认：** GenLayer 编号 `0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39`，外层 EVM `0xe37f775571e97bc0c3e9ba36bd4e2aa9c15be5b1c10b1eaf937682af1905b4cf`，from=888、innerRecipient=候选合约、value=1000000000000000 wei。实际最终确认发生于北京时间 **06:48:41**，EVM 最终确认交易 `0x9eca7eb6881cd1edd3bd0220f3c39065c67c9621cdbf077daddfb9c9057bcfec`，区块 25555249。06:51 受保护的最终读取通过：888 额度和 owed 均为 0.001，locked/count 为 0，源码匹配，接受和最终指针均为该充值。
 
-**创建已签名并接受，尚待最终确认：** 创建编号 `0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7`，外层 EVM `0x50800b2a996928007d73c260fdf789d703e074a97c01ee1f79e4e3d9bc4d21e1`。07:04 核对 from=888、候选接收地址、nonce=7、附带 value=0、六个参数和成功的 EVM 回执。IC 为 ACCEPTED / execution=1，临时挑战 #1 为 OPEN、creator=888、opponent 为空、stake/locked=1000000000000000 wei，888 和 CDC 的可用额度均为 0。此时不能当作最终创建成功；节点给出的最早最终确认资格为北京时间 07:33:28。继续查同一编号，不重发。
+**此前创建接受快照：** 创建编号 `0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7`，外层 EVM `0x50800b2a996928007d73c260fdf789d703e074a97c01ee1f79e4e3d9bc4d21e1`。07:04 核对 from=888、候选接收地址、nonce=7、附带 value=0、六个参数和成功的 EVM 回执。IC 为 ACCEPTED / execution=1，临时挑战 #1 为 OPEN、creator=888、opponent 为空、stake/locked=1000000000000000 wei，888 和 CDC 的可用额度均为 0。此时不能当作最终创建成功；节点给出的最早最终确认资格为北京时间 07:33:28。继续查同一编号，不重发。
 
 已签名规则：仓库 `q3579338/genlayer-event-duels`、标签 `v0.1.1`、每方 0.001 test GEN，标准为发布说明明确宣布可导出交易 hash、钱包、精确 wei 金额与原始回执。接受截止 2026-10-21 09:00（1792544400），事件截止 10:00（1792548000），均北京时间。创建后不可修改。CDC 充值及接受尚未发送。见 [双钱包进度快照](../public/dual-wallet-live-audit.json)。
 
