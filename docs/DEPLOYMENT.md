@@ -1,5 +1,11 @@
 # 部署与最小链上验收
 
+## 2026-10-20 当前状态
+
+0.2.0 候选首笔 0.001 test GEN 充值已最终确认，原路提现也已最终确认并核实实际到账 888；见 [到账凭证](../public/withdraw-live-audit.json)。双钱包与 AI 共识测试尚待执行，旧部署仍暂停写入、旧失账资金回收未验证。
+
+**下文 10 月 9 日的通用钱包 RPC 配置已被本次核对取代。** 当前钱包 RPC 使用 `https://zksync-os-testnet-genlayer.zksync.dev`，链 ID 4221、币种 GEN；这是 [GenLayer 官方 faucet 源码列出的端点](https://github.com/genlayer-foundation/testnet-faucet/blob/main/README.md)。它与 Bradbury 的本部署历史区块一致。通用域名当前返回不同历史，原因未知。读取共识和余额使用 `https://rpc-bradbury.genlayer.com`；该地址不接受小狐狸的字符串请求 ID，不能直接替代钱包 RPC。网页会在连接和每次写入前核对历史区块，不能仅核对链 ID。已有网络的 RPC 可能需用户在 MetaMask 中手动选中；网页添加请求不代表已经切换成功。
+
 状态：旧 0.1.0 部署已最终确认，但实际创建挑战执行失败，旧写操作已暂停。新 0.2.0 候选部署已最终确认、执行成功、源码匹配，尚待实际存取验收。不要把共识接受、本地演示或只读模拟写成完整链上交互证据。
 
 ## 2026-10-19 独立充值候选

@@ -1,5 +1,15 @@
 # 验证记录
 
+## 2026-10-20 · 888 原路提现到账，节点历史保护
+
+提现 `0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73` 已 FINALIZED / execution=1。实际最终确认 EVM 交易为 `0x9bb700fb5f987e4545ebcd4296b59f45b1657e0577c74d598a50c6f55b7bce98`，区块 25533079，北京时间 2026-10-19 21:17:37。
+
+该区块前后，888 余额从 `99992848677159926450` 增至 `99993848677159926450` wei，恰好增加 0.001 test GEN；候选合约从 `1000000000000000` 降为 0 wei。唯一另一笔同区块交易已回滚，付款地址也是不同的最终确认执行者，因此不影响这两个余额差额。当前 888 nonce=6，与原提现提交后相同；余额与原有基线扣除提交手续费再加回 0.001 完全一致。CDC 余额仍为 100 test GEN。`debug_traceTransaction` 不可用，本次依据历史余额、最终确认事件和外部消息交叉核对。可用 `npm run check:withdraw` 只读复现。见 [到账证据](../public/withdraw-live-audit.json)。
+
+通用 `rpc.testnet-chain.genlayer.com` 当前仅返回区块 48637，并找不到本部署历史；Bradbury 与官方 faucet 源码列出的 `zksync-os-testnet-genlayer.zksync.dev` 返回一致历史。原因尚不确定，不能据通用节点的零余额认定资金消失。最终确认读取统一使用 Bradbury；钱包连接和所有写入前增加历史区块 hash 检查，历史不同则阻止签名请求。37 项本地测试和生产构建通过。见 [节点快照](../public/network-readiness.json)。
+
+存取最小闭环通过；双钱包创建／接受、AI 共识裁决及真实 UNKNOWN/72 小时退款仍待执行，Explorer 保持草稿。
+
 ## 2026-10-19 · 888 充值最终确认，原路提现已接受
 
 20:45 首笔充值 `0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7` 已 FINALIZED / execution=1。独立共识 accepted/finalized 指针均为这笔最终充值；受保护的最终读取确认 888 钱包额度与 owed 为 1000000000000000 wei，外部合约余额同额，locked/count 为 0。

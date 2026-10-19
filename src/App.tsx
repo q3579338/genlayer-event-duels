@@ -549,7 +549,7 @@ export default function App() {
                 </p>
                 <p>
                   如果此网络已存在，请在 MetaMask 中选中新
-                  RPC；网页无法确认钱包当前选中的 RPC 地址。
+                  RPC；连接与发送前会核对本合约的历史区块。链 ID 相同也可能对应不同数据。
                 </p>
                 <a
                   href="https://docs.genlayer.com/developers/networks"
@@ -565,7 +565,7 @@ export default function App() {
                   run(async () => {
                     await addWalletRpc();
                     setNotice(
-                      "钱包已处理添加请求。请在 MetaMask 中确认并选中 https://rpc.testnet-chain.genlayer.com；网络已存在时，钱包可能不会自动更换 RPC。",
+                      `钱包已处理添加请求。请在 MetaMask 中确认并选中 ${WALLET_RPC}；网络已存在时，钱包可能不会自动更换 RPC。重新连接时会核对本合约的交易历史。`,
                     );
                   })
                 }

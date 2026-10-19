@@ -5,11 +5,12 @@ import { createClient, abi } from "genlayer-js";
 import { testnetBradbury } from "genlayer-js/chains";
 import { createPublicClient, http, hexToBytes, toHex, toRlp, zeroAddress } from "viem";
 import { asFinalityTip, withFinalizedRead } from "../src/finality-read.ts";
+import { BRADBURY_RPC } from "../src/network-guard.ts";
 
 const root = new URL("../", import.meta.url);
 const manifest = JSON.parse(await readFile(new URL("docs/candidate-deployment.json", root), "utf8"));
 const client = createClient({ chain: testnetBradbury });
-const evm = createPublicClient({ transport: http("https://rpc.testnet-chain.genlayer.com") });
+const evm = createPublicClient({ transport: http(BRADBURY_RPC) });
 async function loadTips() {
   const blockNumber = await evm.getBlockNumber({ cacheTime: 0 });
   const options = { address: testnetBradbury.consensusDataContract.address,
@@ -53,7 +54,7 @@ const stateResults = await Promise.allSettled(["accepted", "finalized"].map(asyn
 const states = stateResults.map((result, index) => result.status === "fulfilled" ? result.value : ({
   state: ["accepted", "finalized"][index], error: result.reason.message,
 }));
-const native = await rpc("https://rpc.testnet-chain.genlayer.com", "eth_getBalance", [manifest.address, "latest"]);
+const native = await rpc(BRADBURY_RPC, "eth_getBalance", [manifest.address, "latest"]);
 const normalized = (text) => text.replace(/\r\n/g, "\n").trim();
 const sourceSha256 = createHash("sha256").update(source).digest("hex");
 const sourceMatchesCandidate = normalized(source) === normalized(expected) && sourceSha256 === manifest.sourceSha256;

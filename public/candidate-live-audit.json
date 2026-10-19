@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T12:49:36.937Z",
+  "observedAt": "2026-10-19T21:50:16.089Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -15,7 +15,7 @@
   "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
   "sourceMatchesCandidate": true,
   "deploymentFinalizedAndSourceVerified": true,
-  "finalizedSourceReady": false,
+  "finalizedSourceReady": true,
   "states": [
     {
       "state": "accepted",
@@ -30,21 +30,28 @@
     },
     {
       "state": "finalized",
-      "error": "此合约还有尚未最终确认的交易。请等待，或选择「共识已接受」查看临时数据。"
+      "stats": {
+        "count": "0",
+        "locked": "0",
+        "owed": "0",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "senderCreditWei": "0"
     }
   ],
   "transactionTips": {
     "accepted": {
       "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 5
+      "status": 7
     },
     "finalized": {
-      "txId": "0xc762d3337a43719b39cb613d49d97acad0ae889e20e1c8ef4d5afca84580c7a7",
+      "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
       "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
       "status": 7
     }
   },
-  "externalBalanceWei": "1000000000000000",
+  "externalBalanceWei": "0",
   "limitation": "Read-only deployment and ledger snapshot. Later actions require their own finalized successful receipts. A gen_call status label alone returned provisional credit; finalized reads are now guarded by on-chain transaction pointers before and after reading. This is not live duel, AI consensus or external payout proof. Latest EVM balance is separate from the Intelligent Contract ledger."
 }

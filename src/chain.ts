@@ -11,6 +11,8 @@ import { contractCall } from "./payable";
 import { saveRecord } from "./journal";
 import candidateSource from "../contracts/candidates/EventDuels.py?raw";
 import { asFinalityTip, assertFinalizedTip, withFinalizedRead } from "./finality-read";
+import { BRADBURY_RPC, WALLET_RPC, BRADBURY_CHECKPOINT, assertBradburyHistory } from "./network-guard";
+export { WALLET_RPC } from "./network-guard";
 export const CANDIDATE_VERSION = "event-duels/0.2.0";
 
 type Provider = NonNullable<
@@ -23,10 +25,9 @@ declare global {
 }
 export const chain = testnetBradbury;
 export const reader = createClient({ chain });
-// The official L2 endpoint accepts MetaMask's string JSON-RPC request IDs.
-// Keep Intelligent Contract reads on the separate GenLayer RPC above.
-export const WALLET_RPC = "https://rpc.testnet-chain.genlayer.com";
-const consensusReader = createPublicClient({ chain, transport: http(WALLET_RPC, { timeout: 30000 }) });
+// Read consensus and IC state through the same Bradbury endpoint. The generic
+// L2 hostname returned a different history on 2026-10-20 despite the same ID.
+const consensusReader = createPublicClient({ chain, transport: http(BRADBURY_RPC, { timeout: 30000 }) });
 async function loadFinalityTips(contract: Address) {
   const dataContract = chain.consensusDataContract;
   if (!dataContract) throw new Error("当前网络缺少最终确认查询配置，请稍后重试。");
@@ -50,7 +51,7 @@ export async function addWalletRpc(): Promise<void> {
         chainName: "GenLayer Bradbury Testnet",
         nativeCurrency: { name: "GEN", symbol: "GEN", decimals: 18 },
         rpcUrls: [WALLET_RPC],
-        blockExplorerUrls: ["https://explorer.testnet-chain.genlayer.com"],
+        blockExplorerUrls: ["https://explorer-bradbury.genlayer.com"],
       },
     ],
   });
@@ -89,6 +90,9 @@ export async function connectWallet(): Promise<Address> {
   const network = await window.ethereum.request({ method: "eth_chainId" });
   if (current[0]?.toLowerCase() !== accounts[0].toLowerCase() || Number(network) !== chain.id)
     throw new Error("连接过程中账户或网络已变更，请重新连接 Bradbury 钱包。");
+  assertBradburyHistory(await window.ethereum.request({
+    method: "eth_getBlockByNumber", params: [BRADBURY_CHECKPOINT.number, false],
+  }));
   return current[0].toLowerCase() as Address;
 }
 function jsonSafe(value: unknown): unknown {
@@ -178,6 +182,9 @@ async function connectedProvider(wallet: string) {
   const chainId = await provider.request({ method: "eth_chainId" });
   if (accounts[0]?.toLowerCase() !== wallet || Number(chainId) !== chain.id)
     throw new Error("账户或网络已改变，请重新连接 Bradbury 钱包。");
+  assertBradburyHistory(await provider.request({
+    method: "eth_getBlockByNumber", params: [BRADBURY_CHECKPOINT.number, false],
+  }));
   return provider;
 }
 function rememberPending(hash: unknown, contract: Address, wallet: string, action: string, args: unknown[], value: bigint): Pending {

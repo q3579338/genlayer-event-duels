@@ -14,6 +14,7 @@
     "check:live": "node scripts/check-live.mjs",
     "check:candidate": "node scripts/check-candidate.mjs",
     "check:candidate-live": "node scripts/check-candidate-live.mjs",
+    "check:withdraw": "node scripts/check-withdraw.mjs",
     "check:ai-smoke": "node scripts/check-ai-smoke.mjs"
   },
   "dependencies": {

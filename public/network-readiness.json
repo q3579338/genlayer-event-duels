@@ -1,0 +1,40 @@
+{
+  "observedAt": "2026-10-19T21:52:54.817Z",
+  "checkpoint": {
+    "number": "0x185984a",
+    "hash": "0xd9cad3a4cb593b7f1461ecc4498314d1e093f52ff66d94bd6d2a87f7d4047d8f"
+  },
+  "nodes": [
+    {
+      "url": "https://rpc-bradbury.genlayer.com",
+      "chainId": "0x107d",
+      "blockNumber": "25554486",
+      "checkpoint": {
+        "number": "0x185984a",
+        "hash": "0xd9cad3a4cb593b7f1461ecc4498314d1e093f52ff66d94bd6d2a87f7d4047d8f"
+      },
+      "walletBalanceWei": "99993848677159926450",
+      "historyMatches": true
+    },
+    {
+      "url": "https://zksync-os-testnet-genlayer.zksync.dev",
+      "chainId": "0x107d",
+      "blockNumber": "25554486",
+      "checkpoint": {
+        "number": "0x185984a",
+        "hash": "0xd9cad3a4cb593b7f1461ecc4498314d1e093f52ff66d94bd6d2a87f7d4047d8f"
+      },
+      "walletBalanceWei": "99993848677159926450",
+      "historyMatches": true
+    },
+    {
+      "url": "https://rpc.testnet-chain.genlayer.com",
+      "chainId": "0x107d",
+      "blockNumber": "48637",
+      "checkpoint": null,
+      "walletBalanceWei": "0",
+      "historyMatches": false
+    }
+  ],
+  "limitation": "Observed endpoint disagreement; its cause is unknown. Matching chain IDs alone do not establish matching transaction history. Wallet connections and all write paths must verify the saved historical block before requesting a signature."
+}

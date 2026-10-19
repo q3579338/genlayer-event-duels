@@ -13,5 +13,5 @@
   "finalizationObservedAt": "2026-10-19T12:02:54.062Z",
   "statusAtObservation": "FINALIZED",
   "executionResult": 1,
-  "role": "Unvalidated deposit-first candidate; does not replace the legacy default deployment yet"
+  "role": "Deposit-first candidate: first deposit and same-wallet external payout verified; live dual-wallet duel and AI consensus still pending. Legacy default remains paused."
 }

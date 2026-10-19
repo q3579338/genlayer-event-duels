@@ -1,10 +1,10 @@
 {
-  "observedAt": "2026-10-19T12:49:30.638Z",
+  "observedAt": "2026-10-19T21:52:38.183Z",
   "transactionId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
   "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
-  "status": "ACCEPTED",
-  "statusCode": 5,
+  "status": "FINALIZED",
+  "statusCode": 7,
   "executionResult": 1,
   "messages": [
     {
@@ -28,7 +28,41 @@
     "gasUsed": "795421",
     "effectiveGasPrice": "187500000"
   },
-  "externalContractBalanceWei": "1000000000000000",
+  "externalContractBalanceWei": "0",
   "earliestFinalizationObservedUnix": "1792415857",
-  "limitation": "The finalized deposit is proven. This withdrawal is only ACCEPTED; its external message has not been confirmed executed and no external payout is claimed."
+  "limitation": "This recorded 0.001 test GEN withdrawal is verified by its finalized successful parent, same-wallet message, successful finalization event and exact opposite external balance deltas. The only other transaction in this block reverted and paid fees from a different account. debug_traceTransaction is unavailable. This does not prove duel creation/acceptance, independent AI settlement, live UNKNOWN refunds or every future payout.",
+  "payoutVerified": true,
+  "rpc": "https://rpc-bradbury.genlayer.com",
+  "finalization": {
+    "evmTransaction": "0x9bb700fb5f987e4545ebcd4296b59f45b1657e0577c74d598a50c6f55b7bce98",
+    "blockNumber": "25533079",
+    "blockHash": "0x472c65f2fd0bf09efbfb44952c5538c972c05384d427d81d8e17ac3f2addda66",
+    "timestampUnix": "1792415857",
+    "finalizedAt": "2026-10-19T13:17:37.000Z",
+    "receiptStatus": "success",
+    "finalizer": "0x57dd0b7ee2de44a5a8cf1f8d7325b13e9a465556",
+    "transactionsInBlock": 2,
+    "otherTransactions": [
+      {
+        "hash": "0x8910215e9686ce65dc2a415229796e2cd01b65709268f55bbf87f0276b2150cd",
+        "status": "reverted",
+        "from": "0x57dd0b7ee2de44a5a8cf1f8d7325b13e9a465556",
+        "to": "0x0112bf6e83497965a5fdd6dad1e447a6e004271d"
+      }
+    ]
+  },
+  "balanceProof": [
+    {
+      "address": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+      "beforeWei": "99992848677159926450",
+      "afterWei": "99993848677159926450"
+    },
+    {
+      "address": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "beforeWei": "1000000000000000",
+      "afterWei": "0"
+    }
+  ],
+  "currentWalletBalanceWei": "99993848677159926450",
+  "currentWalletNonce": 6
 }

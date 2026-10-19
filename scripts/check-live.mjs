@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { createClient, abi } from "genlayer-js";
 import { testnetBradbury } from "genlayer-js/chains";
 import { hexToBytes, toHex, toRlp, zeroAddress } from "viem";
+import { BRADBURY_RPC } from "../src/network-guard.ts";
 
 const deployment = JSON.parse(await readFile(new URL("../docs/deployment.json", import.meta.url), "utf8"));
 const client = createClient({ chain: testnetBradbury });
@@ -28,7 +29,7 @@ async function read(functionName, args = [], status = "finalized") {
 }
 const [stats, duels] = await Promise.all([read("get_stats"), read("list_duels", [0, 50])]);
 const acceptedStats = await read("get_stats", [], "accepted");
-const nativeResponse = await fetch("https://rpc.testnet-chain.genlayer.com", {
+const nativeResponse = await fetch(BRADBURY_RPC, {
   method: "POST", headers: { "content-type": "application/json" },
   body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_getBalance", params: [deployment.address, "latest"] }),
   signal: AbortSignal.timeout(30000),
