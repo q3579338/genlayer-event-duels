@@ -1,0 +1,13 @@
+{
+  "network": "GenLayer Bradbury",
+  "walletChainId": 4221,
+  "address": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+  "transactionId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+  "sourceCommit": "6f8ec900b265fc758e7569b46b1b2cb364e6f6b6",
+  "sourcePath": "contracts/candidates/EventDuels.py",
+  "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
+  "version": "event-duels/0.2.0",
+  "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+  "attachedValueWei": "0",
+  "role": "Unvalidated deposit-first candidate; does not replace the legacy default deployment yet"
+}

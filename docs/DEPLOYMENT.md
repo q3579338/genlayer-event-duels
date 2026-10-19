@@ -1,8 +1,19 @@
 # 部署与最小链上验收
 
-状态：修正版部署已执行成功，当前已最终确认（`FINALIZED`），执行结果为 `FINISHED_WITH_RETURN`。不要把共识接受、本地演示或只读模拟写成最终确认或完整链上交互证据。
+状态：旧 0.1.0 部署已最终确认，但实际创建挑战执行失败，旧写操作已暂停。新 0.2.0 候选部署执行成功、源码匹配，目前等待最终确认。不要把共识接受、本地演示或只读模拟写成最终确认或完整链上交互证据。
 
-## 修正版实际部署
+## 2026-10-19 独立充值候选
+
+- 合约：[0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca](https://explorer-bradbury.genlayer.com/address/0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca)。
+- 部署：[0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862](https://explorer-bradbury.genlayer.com/tx/0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862)，附带金额 0 wei，仅使用测试网网络费。
+- 2026-10-19 19:40（北京时间）只读回执为 ACCEPTED / FINISHED_WITH_RETURN，sender 为用户已连接钱包；接受状态 `get_stats` 版本 `event-duels/0.2.0`，count、locked、owed 均为 0。最终状态尚不存在。
+- 链上源码全文与 `contracts/candidates/EventDuels.py` 一致，SHA256 `041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb`；源码提交 `6f8ec900b265fc758e7569b46b1b2cb364e6f6b6`。
+- 新版先独立 `deposit()` 记额度，创建和接受从已有额度锁定、附带金额 0。必须先完成最小充值和提取的外部到账核对，再继续双钱包挑战。
+- 不重复部署。网络最终确认后，在原页面选择「继续查询最终状态」，前端才会验证并载入新地址。链上确认时长由实际网络状态决定，不假定固定等待时间。
+
+固定部署信息见 [candidate-deployment.json](candidate-deployment.json)，最新只读核对命令 `npm run check:candidate-live`。此命令不创建钱包、不签名、不广播，输出未最终确认的状态不代表可开始充值。完整真实流程见 [LIVE_TEST_PLAN.md](LIVE_TEST_PLAN.md)。以下部署和操作步骤为旧版本历史记录，不应直接用于候选充值流程。
+
+## 旧 0.1.0 实际部署（保留只读）
 
 - 网络：GenLayer Bradbury，钱包 chain ID `4221`。
 - 合约：[0x3cE9F1A0143f77405784F47Aa56467013c3846E9](https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9)。

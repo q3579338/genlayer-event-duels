@@ -6,11 +6,13 @@
 
 31 项本地测试通过：旧合约 12 项、候选 8 项、交易与恢复 11 项。远程 GenVM schema 证实 deposit.payable=true、create_duel.payable=false、accept_duel.payable=false；候选构造函数通过。带 0.001 模拟 value 的只读构造函数集成场景通过 deposit → 无效创建拒绝且保留额度 → 有效创建 → 取消 → 提现方法调用。没有广播部署或真实转账，不能作为独立链上存取证明。源码 SHA256：`041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb`。
 
-生产构建通过，旧部署写入保护已在 Chrome 验证：加载旧合约后创建按钮仍禁用，未连接钱包时部署按钮禁用。全局 `genvm-lint` 命令当前不可用；不把历史版本的 lint 记录用于此候选。候选部署、实际充值和原路提取到账仍待钱包确认和网络最终状态。
+生产构建通过，旧部署写入保护已在 Chrome 验证：加载旧合约后创建按钮仍禁用，未连接钱包时部署按钮禁用。全局 `genvm-lint` 命令当前不可用；不把历史版本的 lint 记录用于此候选。
+
+用户已确认候选部署交易 `0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862`，新地址 `0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca`。19:40（北京时间）回执为 ACCEPTED / FINISHED_WITH_RETURN；链上源码全文和以上 SHA256 匹配。接受状态 count、locked、owed 均为 0，最终状态暂不可读。不是部署签名待处理，不得重复发送。候选最终确认、实际充值和原路提取到账尚未验证。新增只读 `check:candidate-live` 留存回执、双状态额度和 EVM 余额；不会签名或广播。
 
 ## 2026-10-19 · 前端 v0.1.1
 
-真实创建调用已广播：`0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512`。当前为 ACCEPTED / FINISHED_WITH_ERROR，调试 trace 返回 `Use a directly connected testnet wallet`。节点 receipt 的 sender 与 txOrigin 均为用户已连接钱包，但实际 GenVM 地址比较仍失败，完整原因尚未证实。没有成功创建挑战，不计作端到端通过。
+真实创建调用已广播：`0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512`。最新为 FINALIZED / FINISHED_WITH_ERROR，调试 trace 返回 `Use a directly connected testnet wallet`。节点 receipt 的 sender 与 txOrigin 均为用户已连接钱包，但实际 GenVM 地址比较仍失败，完整原因尚未证实。没有成功创建挑战，不计作端到端通过。
 
 对应 EVM 广播交易为 `0xa232563b3c8cfb6655e20ffddb00698d44a487d75797fd41081856b3adf19a30`：chainId=4221，value=1000000000000000 wei，调用当前固定 SDK 的 ConsensusMain `addTransaction`，内部 recipient 是实际 EventDuels。旧合约 EVM 余额已读到 0.001 test GEN；该笔创建失败，没有相应挑战或可提取额度，回收尚未验证。已暂停新写操作，后续应先修正资金接收流程。
 

@@ -12,7 +12,8 @@
     "check:schema": "node scripts/check-schema.mjs",
     "check:deploy": "node scripts/check-deploy.mjs",
     "check:live": "node scripts/check-live.mjs",
-    "check:candidate": "node scripts/check-candidate.mjs"
+    "check:candidate": "node scripts/check-candidate.mjs",
+    "check:candidate-live": "node scripts/check-candidate-live.mjs"
   },
   "dependencies": {
     "genlayer-js": "1.1.8",
