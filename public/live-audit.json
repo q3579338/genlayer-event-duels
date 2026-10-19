@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-19T10:23:32.713Z",
+  "network": "Bradbury",
+  "chainId": 4221,
+  "contract": "0x3cE9F1A0143f77405784F47Aa56467013c3846E9",
+  "deploymentTransaction": "0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90",
+  "deployment": {
+    "status": 7,
+    "statusName": "FINALIZED",
+    "executionResult": 1
+  },
+  "sourceSha256": "ce7b8850419b81e4e2f47b87cb3b4a23995b2bfe2d79b80c6db024a13e2b57ba",
+  "sourceMatches": true,
+  "trimmedSourceSha256": "745fc0b06bfa7b07670d6bb3d4e64ab6b88b2fb6b50afc96d4a05de8b489c12c",
+  "state": "finalized",
+  "stats": {
+    "count": "0",
+    "locked": "0",
+    "owed": "0",
+    "scope": "testnet-prototype",
+    "version": "event-duels/0.1.0"
+  },
+  "duels": [],
+  "limitation": "Read-only state audit. Not proof of live duel execution, AI consensus, refunds or external payout."
+}

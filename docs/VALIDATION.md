@@ -1,5 +1,20 @@
 # 验证记录
 
+## 2026-10-19 · 前端 v0.1.1
+
+- `npm test`：12 项合约状态测试 + 8 项交易与恢复测试通过。新增 UNKNOWN 五分钟重试边界、精确退款时间边界、双边分别提取、证据异常回滚、不可用证据不进入 AI，以及迟到读取失效和记录存储故障恢复检查。
+- `npm run check:schema`：远程 GenVM 仍识别全部 10 个公开方法。
+- `npm run check:deploy`：只读构造函数模拟通过，没有签名或广播。
+- `npm run check:live`：真实部署仍为 FINALIZED / execution=1；链上源码全文与本地文件完全相等。读取 finalized 状态得到 count=0 / locked=0 / owed=0。完整文件 SHA256 为 `ce7b8850419b81e4e2f47b87cb3b4a23995b2bfe2d79b80c6db024a13e2b57ba`；旧部署记录的 `745fc0…` 是去除首尾空白后的哈希，两者口径不同，不是代码变更。
+- Chrome 本地流程实际操作：非法金额拒绝、创建 0.001 示例、第二参与者等额接受、截止前禁止裁决、YES 给甲方双倍额度、NO 给乙方双倍额度、UNKNOWN 后重试按钮禁用、快进 72 小时后双方各退原额并分别提取、未匹配取消及提取。以上均为明确标注的本地演示，不调用真实 AI。
+- Chrome 真实只读流程：选择最终确认，加载实际 Bradbury 合约，页面显示成功并返回空挑战列表。
+- 交易历史和证据现在均支持页面内查看完整 JSON，避免下载受阻时无法复查记录。生产构建中的证据 JSON 已在 Chrome 展开、读取并成功解析，mode=local-demo / status=SETTLED / verdict=YES；浏览器下载事件仍未取得保存文件，不把它登记成下载验证通过。
+- 生产构建已在 Chrome 验证；操作图解两张图片加载正常，应用未记录 JavaScript error。TypeScript 与 Vite 构建通过，主 bundle 约 812 kB（gzip 204 kB），仍有体积提醒。
+
+新增审核材料为公开 `review.html`、只读快照和 [LIVE_TEST_PLAN.md](LIVE_TEST_PLAN.md)。Explorer 重新提交需在真实双钱包流程完成后补齐对应交易证据。
+
+**尚未验证：**真实创建/接受/AI 裁决/取消/提现和外部到账；真实 72 小时退款路径。用户钱包签名与必要的测试币补充是下一步接手点。不能把以下历史记录或本次本地演示写成已完成链上端到端验收。
+
 日期：2026-10-09。环境：Windows，Node.js 24.16.0，Python 3.13，Chrome。
 
 ## 已通过

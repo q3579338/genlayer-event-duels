@@ -31,6 +31,16 @@
     flex-direction: column;
   }
 }
+.transaction-history { margin: 24px 0; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #151f29; }
+.transaction-history summary { cursor: pointer; font-weight: 700; }
+.transaction-history summary span, .transaction-history p, .transaction-history small { color: var(--muted); font-size: 12px; }
+.transaction-history ol { padding: 0; list-style: none; }
+.transaction-history li { padding: 16px 0; border-top: 1px solid var(--line); }
+.transaction-history li div { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
+.transaction-history li span { font-size: 12px; }
+.transaction-history li a { display: block; overflow-wrap: anywhere; font-size: 12px; color: var(--mint); margin: 7px 0; }
+.transaction-history button { display: inline-flex; align-items: center; gap: 7px; }
+.transaction-history pre { max-height: 320px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
 :root {
   font-family: "Space Grotesk", "Noto Sans SC", sans-serif;
   color: #eaf0f4;

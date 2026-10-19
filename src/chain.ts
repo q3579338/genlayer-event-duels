@@ -8,6 +8,7 @@ import { VERSION } from "./model";
 import { finalOutcome, waitForOutcome } from "./transaction";
 import { DEPLOYMENT } from "./deployment";
 import { contractCall } from "./payable";
+import { saveRecord } from "./journal";
 
 type Provider = NonNullable<
   NonNullable<Parameters<typeof createClient>[0]>["provider"]
@@ -45,6 +46,11 @@ export interface Pending {
   hash: TransactionHash;
   contract: Address;
   action: string;
+  wallet?: string;
+  value?: string;
+  args?: unknown[];
+  submittedAt?: string;
+  storageIssue?: boolean;
 }
 export function address(value: string): Address {
   if (!isAddress(value)) throw new Error("请填写有效的 Bradbury 合约地址。");
@@ -63,7 +69,11 @@ export async function connectWallet(): Promise<Address> {
     provider: window.ethereum,
   });
   await client.connect("testnetBradbury");
-  return accounts[0].toLowerCase() as Address;
+  const current = await window.ethereum.request({ method: "eth_accounts" }) as Address[];
+  const network = await window.ethereum.request({ method: "eth_chainId" });
+  if (current[0]?.toLowerCase() !== accounts[0].toLowerCase() || Number(network) !== chain.id)
+    throw new Error("连接过程中账户或网络已变更，请重新连接 Bradbury 钱包。");
+  return current[0].toLowerCase() as Address;
 }
 function jsonSafe(value: unknown): unknown {
   if (typeof value === "bigint")
@@ -150,8 +160,13 @@ export async function send(
     throw new Error(
       "钱包返回的交易编号无法识别，请先在钱包中核对，避免重复提交。",
     );
-  const pending = { hash: hash as TransactionHash, contract, action };
-  localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+  const pending: Pending = { hash: hash as TransactionHash, contract, action,
+    wallet, value: String(value), args, submittedAt: new Date().toISOString() };
+  try {
+    // Arguments may include bigint; keep exact values in the audit record.
+    localStorage.setItem(PENDING_KEY, JSON.stringify(pending, (_, v) => typeof v === "bigint" ? String(v) : v));
+  } catch { pending.storageIssue = true; }
+  if (!saveRecord(localStorage, pending)) pending.storageIssue = true;
   return pending;
 }
 export async function finalize(
@@ -159,16 +174,23 @@ export async function finalize(
   onProgress?: (status: string) => void,
 ) {
   const success = await waitForOutcome(
-    () => reader.getTransaction({ hash: pending.hash }),
+    async () => {
+      const receipt = await reader.getTransaction({ hash: pending.hash });
+      saveRecord(localStorage, { ...pending, checkedAt: new Date().toISOString(), receipt });
+      return receipt;
+    },
     { onProgress },
   );
-  localStorage.removeItem(PENDING_KEY);
+  // Do not erase a different pending transaction written by another tab.
+  if (loadPending()?.hash === pending.hash) {
+    try { localStorage.removeItem(PENDING_KEY); } catch { /* Hash remains visible in this tab. */ }
+  }
   return success;
 }
 export function loadPending(): Pending | null {
   try {
     const p = JSON.parse(localStorage.getItem(PENDING_KEY) || "null");
-    return p && isAddress(p.contract) && /^0x[0-9a-fA-F]{64}$/.test(p.hash)
+    return p && isAddress(p.contract) && /^0x[0-9a-fA-F]{64}$/.test(p.hash) && typeof p.action === "string"
       ? p
       : null;
   } catch {

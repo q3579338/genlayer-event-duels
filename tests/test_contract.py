@@ -214,6 +214,67 @@ class ContractTests(unittest.TestCase):
         instance = module.EventDuels()
         self.assertEqual(instance.get_stats()["count"], 0)
 
+    def test_unknown_retry_boundary_then_success_keeps_funds_conserved(self):
+        duel_id = self.match()
+        self.now += 3600
+        gl.nondet.exec_prompt = lambda _: "UNKNOWN"
+        self.call("resolve_duel", duel_id)
+        self.assertEqual(self.contract.locked, 2 * self.stake)
+        self.now += 299
+        with self.assertRaisesRegex(ValueError, "five minutes"):
+            self.call("resolve_duel", duel_id)
+        self.assertEqual(self.contract.get_duel(duel_id)["checks"], 1)
+        self.now += 1
+        gl.nondet.exec_prompt = lambda _: "YES"
+        self.call("resolve_duel", duel_id)
+        self.assertEqual(self.contract.get_duel(duel_id)["checks"], 2)
+        self.assertEqual(self.contract.locked, 0)
+        self.assertEqual(self.contract.owed, 2 * self.stake)
+
+    def test_refund_at_exact_threshold_both_participants_withdraw(self):
+        duel_id = self.match()
+        self.now = self.contract.get_duel(duel_id)["refund_after"] - 1
+        with self.assertRaisesRegex(ValueError, "72 hours"):
+            self.call("refund_duel", duel_id)
+        self.now += 1
+        with self.assertRaisesRegex(ValueError, "resolution window"):
+            self.call("resolve_duel", duel_id)
+        self.as_user(self.outsider)
+        self.call("refund_duel", duel_id)
+        for wallet in [self.alice, self.bob]:
+            self.as_user(wallet)
+            self.call("withdraw")
+        self.assertEqual(TRANSFERS, [(self.alice, self.stake), (self.bob, self.stake)])
+        self.assertEqual(self.contract.locked + self.contract.owed, 0)
+
+    def test_host_fetch_failure_rolls_back_without_payout_then_can_retry(self):
+        duel_id = self.match()
+        self.now += 3600
+        original = gl.nondet.web.get
+        try:
+            gl.nondet.web.get = lambda _: types.SimpleNamespace(status=200, body=b"invalid JSON")
+            with self.assertRaises(json.JSONDecodeError):
+                self.call("resolve_duel", duel_id)
+        finally:
+            gl.nondet.web.get = original
+        self.assertEqual(self.contract.get_duel(duel_id)["checks"], 0)
+        self.assertEqual(self.contract.get_duel(duel_id)["status"], "ACTIVE")
+        self.assertEqual(self.contract.owed, 0)
+        self.call("resolve_duel", duel_id)
+        self.assertEqual(self.contract.get_credit(self.alice), str(2 * self.stake))
+
+    def test_mismatched_tag_or_oversized_notes_cannot_trigger_ai_payout(self):
+        for patch in [{"tag_name": "vWRONG"}, {"body": "x" * 12001}, {"draft": True}]:
+            with self.subTest(patch=patch):
+                self.setUp()
+                duel_id = self.match()
+                self.now += 3600
+                RELEASE.update(patch)
+                gl.nondet.exec_prompt = lambda _: self.fail("Unusable evidence reached AI")
+                self.call("resolve_duel", duel_id)
+                self.assertEqual(self.contract.get_duel(duel_id)["verdict"], "UNKNOWN")
+                self.assertEqual(self.contract.owed, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -5,15 +5,16 @@ export function Evidence({ duel, demo, contract, readState }: {
   duel: Duel; demo: boolean; contract: string; readState: string;
 }) {
   const evidence = duel.evidence;
-  function download() {
-    const record = {
+  const record = {
       format: "event-duels-evidence/1", mode: demo ? "local-demo" : "bradbury",
       exported_at: new Date().toISOString(),
       contract: demo ? null : contract, read_state: demo ? null : readState,
       disclaimer: "Exported frontend data, not a cryptographic proof. Verify against the contract. Release notes may change. No AI reasoning trace is provided.",
       duel,
-    };
-    const url = URL.createObjectURL(new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }));
+  };
+  const json = JSON.stringify(record, null, 2);
+  function download() {
+    const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
     const link = document.createElement("a");
     link.href = url;
     link.download = `event-duels-${demo ? "demo" : "bradbury"}-${duel.id}-evidence.json`;
@@ -33,5 +34,6 @@ export function Evidence({ duel, demo, contract, readState }: {
     <pre>{evidence.body || `未取得足够证据。${evidence.http_status || evidence.problem || ""}`}</pre>
     <p className="muted">{demo ? "以下内容为本地演示数据。" : "以下内容为当前读取状态下的合约记录。"}导出文件用于复查，不是独立证明；发布说明可能被修改。合约未保存 AI 推理过程。</p>
     <button onClick={download}>下载{demo ? "演示" : "裁决"}证据 JSON</button>
+    <details><summary>查看完整 JSON 记录</summary><pre aria-label="证据 JSON 记录">{json}</pre></details>
   </div>;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import {
   ArrowUpRight,
@@ -46,6 +46,9 @@ import {
 import type { Pending, ReadState } from "./chain";
 import contractSource from "../contracts/EventDuels.py?raw";
 import { DEPLOYMENT } from "./deployment";
+import { ReadGuard } from "./read-guard";
+import { loadJournal } from "./journal";
+import { TransactionHistory } from "./TransactionHistory";
 
 const token = (wei: string) => formatEther(BigInt(wei));
 const dateInput = (seconds: number) => {
@@ -77,6 +80,10 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Pending | null>(loadPending);
   const [tick, setTick] = useState(Date.now());
+  const [journal, setJournal] = useState(() => loadJournal(localStorage));
+  const readGuard = useRef(new ReadGuard());
+  const context = useRef({ contract, wallet, readState });
+  context.current = { contract, wallet, readState };
   const isDemo = mode === "demo";
   const now = Math.floor(tick / 1000) + (isDemo ? demo.offset : 0);
   const actor = isDemo ? persona : wallet;
@@ -94,13 +101,18 @@ export default function App() {
   useEffect(() => {
     const provider = window.ethereum;
     const reset = () => {
+      readGuard.current.invalidate();
+      context.current.wallet = "";
       setWallet("");
+      setReady(false);
+      setLiveDuels([]);
       setCredit("0");
       setNotice("钱包账户或网络已变更，请重新连接。");
     };
     provider?.on?.("accountsChanged", reset);
     provider?.on?.("chainChanged", reset);
     return () => {
+      readGuard.current.invalidate();
       provider?.removeListener?.("accountsChanged", reset);
       provider?.removeListener?.("chainChanged", reset);
     };
@@ -116,18 +128,25 @@ export default function App() {
         e instanceof Error ? e.message.slice(0, 450) : "操作未完成，请重试。",
       );
     } finally {
+      setJournal(loadJournal(localStorage));
       setBusy(false);
     }
   }
-  async function refresh(c = contract, w = wallet) {
+  async function refresh(c = context.current.contract, w = context.current.wallet) {
+    const current = readGuard.current.begin();
+    const state = context.current.readState;
     setReady(false);
     setLiveDuels([]);
     setCredit("0");
-    const result = await readDuels(address(c), w, readState);
+    let result;
+    try { result = await readDuels(address(c), w, state); }
+    catch (e) { if (!current()) return false; throw e; }
+    if (!current()) return false;
     setLiveDuels(result.duels);
     setCredit(result.credit);
     setReady(true);
     localStorage.setItem("event-duels:contract", c);
+    return true;
   }
   async function wait(p: Pending) {
     setNotice("已发送，正在等待最终确认；查询超时后可继续查询。");
@@ -142,7 +161,7 @@ export default function App() {
         ? "提现请求已最终确认；请再核对钱包到账和后续转账记录。"
         : "交易已最终确认。",
     );
-    if (p.contract.toLowerCase() === contract.toLowerCase())
+    if (p.contract.toLowerCase() === context.current.contract.toLowerCase())
       await refresh(p.contract);
   }
   async function transact(
@@ -320,6 +339,7 @@ export default function App() {
         <nav>
           <a href="#challenges">探索挑战</a>
           <a href="#how">运作方式</a>
+          <a href="./review.html">测试与演示</a>
           <a
             href="https://github.com/q3579338/genlayer-event-duels"
             target="_blank"
@@ -336,6 +356,7 @@ export default function App() {
               ? setPersona(persona === ALICE ? BOB : ALICE)
               : run(async () => {
                   const w = await connectWallet();
+                  context.current.wallet = w;
                   setWallet(w);
                   if (contract) await refresh(contract, w);
                 })
@@ -364,6 +385,7 @@ export default function App() {
               onClick={() => {
                 setMode("demo");
                 setSelected(null);
+                setNotice(""); setError("");
               }}
             >
               体验演示
@@ -374,6 +396,7 @@ export default function App() {
               onClick={() => {
                 setMode("chain");
                 setSelected(null);
+                setNotice(""); setError("");
               }}
             >
               连接测试网
@@ -477,6 +500,7 @@ export default function App() {
               读取状态：{" "}
               <select value={readState} disabled={busy || !!pending}
                 onChange={(e) => {
+                  readGuard.current.invalidate();
                   setReadState(e.target.value as ReadState);
                   setReady(false);
                   setLiveDuels([]);
@@ -528,6 +552,7 @@ export default function App() {
                 value={contract}
                 disabled={busy || !!pending}
                 onChange={(e) => {
+                  readGuard.current.invalidate();
                   setContract(e.target.value);
                   setReady(false);
                   setLiveDuels([]);
@@ -539,7 +564,7 @@ export default function App() {
                 disabled={busy || !!pending || !contract.trim()}
                 onClick={() =>
                   run(async () => {
-                    await refresh();
+                    if (!await refresh()) return;
                     setNotice(readState === "finalized"
                       ? "已加载最终确认的链上数据。"
                       : "已加载共识接受的链上数据；尚处于申诉窗口的数据仍可能改变。");
@@ -595,11 +620,14 @@ export default function App() {
               合约 {pending.contract} · {pending.action}
               。查询超时不等于失败，请勿重复发送。
             </small>
+            {pending.storageIssue && <p className="error">浏览器未能保存交易编号，请先复制上方编号；关闭页面后可能无法自动恢复。请勿重复发送。</p>}
+            <a href={`https://explorer-bradbury.genlayer.com/tx/${pending.hash}`} target="_blank" rel="noreferrer">在区块浏览器核对</a>
             <button disabled={busy} onClick={() => run(() => wait(pending))}>
               继续查询最终状态
             </button>
           </div>
         )}
+        {!isDemo && <TransactionHistory records={journal} />}
         <section id="challenges" className="challenges">
           <div className="section-heading">
             <div>

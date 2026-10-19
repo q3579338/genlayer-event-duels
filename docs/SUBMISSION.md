@@ -20,11 +20,13 @@
 
 Event Duels explores a narrow trust problem: two participants should not depend on a website operator to rewrite their agreed release criteria or choose a payout recipient after the event. The Intelligent Contract fixes the repository, tag, feature claim, deadlines and equal deposits. It fetches the specified GitHub release through GenLayer, evaluates the feature claim with independent execution and strict equivalence, and stores the evidence and verdict. YES and NO credit the winner; UNKNOWN keeps the challenge open until a 72-hour refund threshold. Participants withdraw their credited amount separately.
 
-The repository includes the actual Python contract, a Chinese React frontend, a clearly labelled local demonstration, a Bradbury wallet adapter, eight focused contract-state tests, four transaction-lifecycle tests, deployment instructions and explicit trust limitations. The current version has passed local checks, remote schema extraction and a read-only constructor simulation. A first deployment error was diagnosed and corrected. The corrected Bradbury deployment has reached FINALIZED with FINISHED_WITH_RETURN; its deployed source matches the repository and the frontend reads the real contract. Live duel/AI/settlement/payout validation is still pending.
+The repository includes the actual Python contract, a Chinese React frontend, a clearly labelled local demonstration, a Bradbury wallet adapter, twelve contract-state tests and eight transaction/recovery tests. Frontend v0.1.1 adds stale-read invalidation, persistent transaction records with exact wei amounts and raw receipts, and page-readable JSON evidence. The current version passes local checks, remote schema extraction and read-only deployment/source verification. The Bradbury deployment is FINALIZED with FINISHED_WITH_RETURN and its source exactly matches the repository. A public walkthrough separates manual demo steps from real chain evidence. Live duel/AI/settlement/payout validation is still pending.
 
 **源码：** https://github.com/q3579338/genlayer-event-duels
 
 **公开演示：** https://q3579338.github.io/genlayer-event-duels/ （默认是明确标注的本地模拟，不代表已上链）
+
+**操作图解与验证：** https://q3579338.github.io/genlayer-event-duels/review.html
 
 **实际合约：** https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9 （已最终确认并执行成功）
 
