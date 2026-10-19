@@ -1,6 +1,6 @@
 {
   "name": "genlayer-event-duels",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -11,7 +11,8 @@
     "test": "python -m unittest discover -s tests -v && node --test tests/*.test.mjs",
     "check:schema": "node scripts/check-schema.mjs",
     "check:deploy": "node scripts/check-deploy.mjs",
-    "check:live": "node scripts/check-live.mjs"
+    "check:live": "node scripts/check-live.mjs",
+    "check:candidate": "node scripts/check-candidate.mjs"
   },
   "dependencies": {
     "genlayer-js": "1.1.8",

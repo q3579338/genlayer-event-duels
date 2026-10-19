@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T10:23:32.713Z",
+  "observedAt": "2026-10-19T11:10:32.835Z",
   "network": "Bradbury",
   "chainId": 4221,
   "contract": "0x3cE9F1A0143f77405784F47Aa56467013c3846E9",
@@ -21,5 +21,17 @@
     "version": "event-duels/0.1.0"
   },
   "duels": [],
+  "acceptedStats": {
+    "count": "0",
+    "locked": "0",
+    "owed": "0",
+    "scope": "testnet-prototype",
+    "version": "event-duels/0.1.0"
+  },
+  "externalBalance": {
+    "state": "latest EVM",
+    "wei": "1000000000000000",
+    "limitation": "Separate from the IC ledger; pending or failed native value may remain uncredited. Recoverability is not established by this balance."
+  },
   "limitation": "Read-only state audit. Not proof of live duel execution, AI consensus, refunds or external payout."
 }

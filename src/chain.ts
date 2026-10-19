@@ -9,6 +9,8 @@ import { finalOutcome, waitForOutcome } from "./transaction";
 import { DEPLOYMENT } from "./deployment";
 import { contractCall } from "./payable";
 import { saveRecord } from "./journal";
+import candidateSource from "../contracts/candidates/EventDuels.py?raw";
+export const CANDIDATE_VERSION = "event-duels/0.2.0";
 
 type Provider = NonNullable<
   NonNullable<Parameters<typeof createClient>[0]>["provider"]
@@ -128,13 +130,80 @@ export async function readDuels(contract: Address, wallet: string, state: ReadSt
   const read = (functionName: string, args: CalldataEncodable[] = []) =>
     readContractState(contract, functionName, args, state);
   const stats = (await read("get_stats")) as { version?: string };
-  if (stats.version !== VERSION)
+  if (stats.version !== VERSION && stats.version !== CANDIDATE_VERSION)
     throw new Error("合约版本不匹配，请使用本仓库的 EventDuels 合约。");
+  let writable = false;
+  if (stats.version === CANDIDATE_VERSION) {
+    await verifyCandidateSource(contract);
+    // Never enable deposits into a deployment proved only in accepted state.
+    try {
+      const final = await readContractState(contract, "get_stats", [], "finalized") as { version?: string };
+      writable = final.version === CANDIDATE_VERSION;
+    } catch { /* Read-only until deployment finality can be established. */ }
+  }
   const [duels, credit] = await Promise.all([
     read("list_duels", [0, 50]),
     wallet ? read("get_credit", [wallet]) : "0",
   ]);
-  return { duels: duels as unknown as Duel[], credit: String(credit) };
+  return { duels: duels as unknown as Duel[], credit: String(credit), writable };
+}
+async function verifyCandidateSource(contract: Address) {
+  const code = await reader.getContractCode(contract);
+  const normalize = (value: string) => value.replace(/\r\n/g, "\n").trim();
+  if (normalize(code) !== normalize(candidateSource))
+    throw new Error("合约源码与本项目修复版不一致，已阻止写入。");
+}
+async function connectedProvider(wallet: string) {
+  const provider = window.ethereum;
+  if (!provider) throw new Error("请先连接钱包。");
+  const accounts = await provider.request({ method: "eth_accounts" }) as string[];
+  const chainId = await provider.request({ method: "eth_chainId" });
+  if (accounts[0]?.toLowerCase() !== wallet || Number(chainId) !== chain.id)
+    throw new Error("账户或网络已改变，请重新连接 Bradbury 钱包。");
+  return provider;
+}
+function rememberPending(hash: unknown, contract: Address, wallet: string, action: string, args: unknown[], value: bigint): Pending {
+  if (typeof hash !== "string" || !/^0x[0-9a-fA-F]{64}$/.test(hash))
+    throw new Error("钱包返回的交易编号无法识别，请先在钱包中核对，避免重复提交。");
+  const pending: Pending = { hash: hash as TransactionHash, contract, action,
+    wallet, value: String(value), args, submittedAt: new Date().toISOString() };
+  try {
+    localStorage.setItem(PENDING_KEY, JSON.stringify(pending, (_, v) => typeof v === "bigint" ? String(v) : v));
+  } catch { pending.storageIssue = true; }
+  if (!saveRecord(localStorage, pending)) pending.storageIssue = true;
+  return pending;
+}
+export async function deployCandidate(wallet: string): Promise<Pending> {
+  const previous = loadPending();
+  if (previous) {
+    // A new deployment is independent of the failed legacy create. Retain its
+    // non-final receipt in history; never silently retry or replace that call.
+    const receipt = await reader.getTransaction({ hash: previous.hash });
+    if (previous.action !== "create_duel" || previous.contract.toLowerCase() !== DEPLOYMENT.address.toLowerCase() ||
+        receipt.recipient?.toLowerCase() !== DEPLOYMENT.address.toLowerCase() || !((receipt.txExecutionResult ?? 0) > 1))
+      throw new Error("请先核对已有交易，不能重复部署或覆盖待处理的请求。");
+    if (!saveRecord(localStorage, { ...previous, checkedAt: new Date().toISOString(), receipt }))
+      throw new Error("旧交易回执未能保存，请先导出记录，不要继续发送。");
+  }
+  const provider = await connectedProvider(wallet);
+  const client = createClient({ chain, account: wallet as Address, provider });
+  const hash = await client.deployContract({ code: new TextEncoder().encode(candidateSource), args: [] });
+  return rememberPending(hash, zeroAddress, wallet, "deploy_candidate", [], 0n);
+}
+export async function checkRecordedTransaction(record: { hash: string; contract: string; action: string }) {
+  const receipt = await reader.getTransaction({ hash: record.hash as TransactionHash });
+  if (!saveRecord(localStorage, { ...record, checkedAt: new Date().toISOString(), receipt }))
+    throw new Error("回执已读取，但浏览器未能保存，请先导出记录。");
+  return receipt;
+}
+export async function deployedCandidate(pending: Pending): Promise<Address> {
+  const receipt = await reader.getTransaction({ hash: pending.hash });
+  if (finalOutcome(receipt) !== true) throw new Error("部署尚未最终确认且执行成功。");
+  if (!receipt.recipient) throw new Error("部署回执未提供合约地址，请在浏览器中核对。");
+  const contract = address(receipt.recipient);
+  if (contract === zeroAddress) throw new Error("部署回执未提供合约地址，请在浏览器中核对。");
+  await verifyCandidateSource(contract);
+  return contract;
 }
 export async function send(
   contract: Address,
@@ -143,31 +212,16 @@ export async function send(
   args: CalldataEncodable[],
   value = 0n,
 ): Promise<Pending> {
-  const provider = window.ethereum;
-  if (!provider) throw new Error("请先连接钱包。");
-  const accounts = (await provider.request({
-    method: "eth_accounts",
-  })) as string[];
-  const chainId = await provider.request({ method: "eth_chainId" });
-  if (accounts[0]?.toLowerCase() !== wallet || Number(chainId) !== chain.id)
-    throw new Error("账户或网络已改变，请重新连接 Bradbury 钱包。");
+  if (action !== "deposit" && value !== 0n)
+    throw new Error("创建和接受挑战只使用已到账额度，不得附带新的转账。");
+  await verifyCandidateSource(contract);
+  const provider = await connectedProvider(wallet);
   const client = createClient({ chain, account: wallet as Address, provider });
   const call = contractCall(contract, action, args, value);
   // Stable Bradbury uses the 1.x submission ABI. The 2.x fee-distribution
   // API belongs to the separate v0.6 preview stack, not this deployment.
   const hash = await client.writeContract(call);
-  if (typeof hash !== "string" || !/^0x[0-9a-fA-F]{64}$/.test(hash))
-    throw new Error(
-      "钱包返回的交易编号无法识别，请先在钱包中核对，避免重复提交。",
-    );
-  const pending: Pending = { hash: hash as TransactionHash, contract, action,
-    wallet, value: String(value), args, submittedAt: new Date().toISOString() };
-  try {
-    // Arguments may include bigint; keep exact values in the audit record.
-    localStorage.setItem(PENDING_KEY, JSON.stringify(pending, (_, v) => typeof v === "bigint" ? String(v) : v));
-  } catch { pending.storageIssue = true; }
-  if (!saveRecord(localStorage, pending)) pending.storageIssue = true;
-  return pending;
+  return rememberPending(hash, contract, wallet, action, args, value);
 }
 export async function finalize(
   pending: Pending,
@@ -181,6 +235,7 @@ export async function finalize(
     },
     { onProgress },
   );
+  if (success && pending.action === "deploy_candidate") await deployedCandidate(pending);
   // Do not erase a different pending transaction written by another tab.
   if (loadPending()?.hash === pending.hash) {
     try { localStorage.removeItem(PENDING_KEY); } catch { /* Hash remains visible in this tab. */ }

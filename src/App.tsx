@@ -38,6 +38,9 @@ import {
   addWalletRpc,
   WALLET_RPC,
   connectWallet,
+  checkRecordedTransaction,
+  deployCandidate,
+  deployedCandidate,
   finalize,
   loadPending,
   readDuels,
@@ -71,6 +74,8 @@ export default function App() {
   const [liveDuels, setLiveDuels] = useState<Duel[]>([]);
   const [credit, setCredit] = useState("0");
   const [ready, setReady] = useState(false);
+  const [writable, setWritable] = useState(false);
+  const [depositAmount, setDepositAmount] = useState("0.001");
   const [readState, setReadState] = useState<ReadState>("accepted");
   const [selected, setSelected] = useState<number | null>(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -81,6 +86,9 @@ export default function App() {
   const [pending, setPending] = useState<Pending | null>(loadPending);
   const [tick, setTick] = useState(Date.now());
   const [journal, setJournal] = useState(() => loadJournal(localStorage));
+  const failedLegacyPending = pending?.action === "create_duel" &&
+    pending.contract.toLowerCase() === DEPLOYMENT.address.toLowerCase() &&
+    (journal.find((record) => record.hash === pending.hash)?.receipt?.txExecutionResult || 0) > 1;
   const readGuard = useRef(new ReadGuard());
   const context = useRef({ contract, wallet, readState });
   context.current = { contract, wallet, readState };
@@ -90,7 +98,7 @@ export default function App() {
   const duels = isDemo ? demo.duels : liveDuels;
   const balance = isDemo ? demo.credits[persona] || "0" : credit;
   const duel = duels.find((d) => d.id === selected);
-  const disabled = busy || (!isDemo && (!ready || !wallet || !!pending || DEPLOYMENT.writesPaused));
+  const disabled = busy || (!isDemo && (!ready || !wallet || !!pending || !writable));
   useEffect(() => {
     localStorage.setItem(DEMO_KEY, JSON.stringify(demo));
   }, [demo]);
@@ -105,6 +113,7 @@ export default function App() {
       context.current.wallet = "";
       setWallet("");
       setReady(false);
+      setWritable(false);
       setLiveDuels([]);
       setCredit("0");
       setNotice("钱包账户或网络已变更，请重新连接。");
@@ -136,6 +145,7 @@ export default function App() {
     const current = readGuard.current.begin();
     const state = context.current.readState;
     setReady(false);
+    setWritable(false);
     setLiveDuels([]);
     setCredit("0");
     let result;
@@ -145,6 +155,7 @@ export default function App() {
     setLiveDuels(result.duels);
     setCredit(result.credit);
     setReady(true);
+    setWritable(result.writable);
     localStorage.setItem("event-duels:contract", c);
     return true;
   }
@@ -161,6 +172,14 @@ export default function App() {
         ? "提现请求已最终确认；请再核对钱包到账和后续转账记录。"
         : "交易已最终确认。",
     );
+    if (p.action === "deploy_candidate") {
+      const deployed = await deployedCandidate(p);
+      context.current.contract = deployed;
+      setContract(deployed);
+      await refresh(deployed);
+      setNotice("修复版部署已最终确认，源码核对通过。请先用最低金额测试充值与提取。");
+      return;
+    }
     if (p.contract.toLowerCase() === context.current.contract.toLowerCase())
       await refresh(p.contract);
   }
@@ -169,7 +188,7 @@ export default function App() {
     args: CalldataEncodable[] = [],
     value = 0n,
   ) {
-    if (DEPLOYMENT.writesPaused)
+    if (!writable)
       throw new Error("当前部署的写操作未通过实测，暂时停用；已有交易仍可继续查询。");
     if (!ready || !wallet || pending)
       throw new Error("请先连接合约、钱包，并处理已有交易。");
@@ -232,7 +251,7 @@ export default function App() {
     run(async () => {
       if (isDemo) demoAction(name, d, verdict);
       else {
-        const call = duelActionCall(name, d);
+        const call = duelActionCall(name, d, true);
         await transact(call.name, call.args, call.value);
       }
     });
@@ -302,12 +321,14 @@ export default function App() {
         });
         setSelected(id);
         setNotice("演示挑战已创建。切换到乙方，可以体验接受挑战。");
-      } else
+      } else {
+        if (BigInt(balance) < stake) throw new Error("可用额度不足。请先充值，到账后再创建；创建交易不再附带转账。");
         await transact(
           "create_duel",
-          [repo, tag, feature, acceptance, deadline],
-          stake,
+          [repo, tag, feature, acceptance, deadline, String(stake)],
+          0n,
         );
+      }
       setShowCreate(false);
     });
   }
@@ -422,7 +443,7 @@ export default function App() {
             </p>
             <button
               className="primary"
-              disabled={!isDemo && (!ready || DEPLOYMENT.writesPaused)}
+              disabled={!isDemo && (!ready || !writable)}
               onClick={() => setShowCreate(true)}
             >
               发起一个挑战 <ArrowUpRight size={18} />
@@ -483,7 +504,7 @@ export default function App() {
         </div>
         {!isDemo && (
           <section className="connection">
-            {DEPLOYMENT.writesPaused && <div className="error">
+            {DEPLOYMENT.writesPaused && contract.toLowerCase() === DEPLOYMENT.address.toLowerCase() && <div className="error">
               当前部署的创建操作未通过真实测试，已暂停新的写操作。已有交易仍可查询，演示与只读功能可继续使用。
             </div>}
             <div>
@@ -508,6 +529,7 @@ export default function App() {
                   readGuard.current.invalidate();
                   setReadState(e.target.value as ReadState);
                   setReady(false);
+                  setWritable(false);
                   setLiveDuels([]);
                   setCredit("0");
                   setError("");
@@ -560,6 +582,7 @@ export default function App() {
                   readGuard.current.invalidate();
                   setContract(e.target.value);
                   setReady(false);
+                  setWritable(false);
                   setLiveDuels([]);
                   setCredit("0");
                   setError("");
@@ -600,6 +623,19 @@ export default function App() {
                 部署说明
               </a>
             </p>
+            <details className="deployment-tools">
+              <summary>测试修复版 · 部署与验证</summary>
+              <p>0.2.0 将充值和挑战分开。创建或接受失败时，已有额度仍保留；充值本身与最终到账仍需真实测试。旧合约和历史记录保留。</p>
+              <p>部署只使用测试网网络费，不充值、不发起挑战。最终确认后，网站会核对完整源码再开放写操作。钱包安全提醒仍需你自行检查。</p>
+              <button disabled={busy || (!!pending && !failedLegacyPending) || !wallet} onClick={() => run(async () => {
+                const p = await deployCandidate(wallet);
+                setPending(p);
+                await wait(p);
+              })}>部署测试修复版 · 需要钱包确认</button>
+              {!!pending && <p>{failedLegacyPending
+                ? "旧创建已报告执行错误，仍待最终确认。部署是另一笔独立交易；旧编号和回执会保留在交易记录中，可继续只读查询。"
+                : "先核对已有交易的最终状态，再部署修复版。"}</p>}
+            </details>
           </section>
         )}
         <div aria-live="polite">
@@ -632,7 +668,10 @@ export default function App() {
             </button>
           </div>
         )}
-        {!isDemo && <TransactionHistory records={journal} />}
+        {!isDemo && <TransactionHistory records={journal} busy={busy} onCheck={(record) => run(async () => {
+          const receipt = await checkRecordedTransaction(record);
+          setNotice(`回执已更新：${receipt.statusName || receipt.status}，执行结果 ${receipt.txExecutionResult ?? "待确认"}。`);
+        })} />}
         <section id="challenges" className="challenges">
           <div className="section-heading">
             <div>
@@ -642,7 +681,7 @@ export default function App() {
               </h2>
             </div>
             <div className="credit">
-              <span>我的待提取额度</span>
+              <span>可用额度（可提取）</span>
               <strong>
                 {token(balance)} <small>test GEN</small>
               </strong>
@@ -654,6 +693,17 @@ export default function App() {
               </button>
             </div>
           </div>
+          {!isDemo && writable && <div className="deposit-row">
+            <label>充值 · test GEN <input aria-label="充值金额 · test GEN" inputMode="decimal" value={depositAmount} disabled={disabled}
+              onChange={(e) => setDepositAmount(e.target.value)} /></label>
+            <button disabled={disabled} onClick={() => run(async () => {
+              if (!/^\d+(\.\d{1,18})?$/.test(depositAmount)) throw new Error("请填写最多 18 位小数的充值金额。");
+              const value = parseEther(depositAmount);
+              if (value < 10n ** 15n || value > 10n ** 19n) throw new Error("请使用 0.001–10 test GEN。");
+              await transact("deposit", [], value);
+            })}>充值到可用额度 · 需要签名</button>
+            <p>先单独充值并核对到账，再创建或接受挑战；后两步只锁定已有额度，不附带新的转账。</p>
+          </div>}
           <div className="list-toolbar">
             <div className="tabs">
               {["全部挑战", "等待对手", "与我相关"].map((t) => (
@@ -716,7 +766,7 @@ export default function App() {
             ))}
             <button
               className="new-card"
-              disabled={!isDemo && (!ready || DEPLOYMENT.writesPaused)}
+              disabled={!isDemo && (!ready || !writable)}
               onClick={() => setShowCreate(true)}
             >
               <span>
@@ -897,6 +947,7 @@ export default function App() {
                 />
               </label>
               <p className="form-note">
+                {!isDemo && "修复版使用已到账的可用额度；此创建交易附带金额为 0。"}
                 YES：按期正式发布且明确支持。NO：发布晚于截止，或发布说明明确否定
                 / 留待未来实现。其余为 UNKNOWN，事件截止 72
                 小时后可申请原额退款。创建与接受均需支付各自投入；测试网另有网络费用。
@@ -990,12 +1041,14 @@ export default function App() {
                   {now < duel.accept_before && actor !== duel.creator && (
                     <button
                       className="primary"
-                      disabled={disabled}
+                      disabled={disabled || (!isDemo && BigInt(balance) < BigInt(duel.stake))}
                       onClick={() => action("accept_duel", duel)}
                     >
-                      支持 NO，投入 {token(duel.stake)} test GEN
+                      支持 NO，{isDemo ? "投入" : "锁定额度"} {token(duel.stake)} test GEN
                     </button>
                   )}
+                  {!isDemo && now < duel.accept_before && actor !== duel.creator && BigInt(balance) < BigInt(duel.stake) &&
+                    <p>可用额度不足。请先关闭详情并充值，到账后再接受挑战。</p>}
                   {(actor === duel.creator || now >= duel.accept_before) && (
                     <button
                       disabled={disabled}

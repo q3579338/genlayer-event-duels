@@ -38,3 +38,13 @@ test("storage failure cannot hide a broadcast hash; malformed saved data is igno
   storage.setItem(JOURNAL_KEY, "broken");
   assert.deepEqual(loadJournal(storage), []);
 });
+test("a new deployment does not erase the failed legacy call's non-final receipt", () => {
+  const storage = store();
+  saveRecord(storage, { ...record, action: "create_duel", receipt: { status: 5, txExecutionResult: 2 } });
+  const deployment = { ...record, hash: "0x" + "ef".repeat(32), action: "deploy_candidate" };
+  saveRecord(storage, deployment);
+  const records = loadJournal(storage);
+  assert.equal(records.length, 2);
+  assert.equal(records.find(r => r.hash === record.hash).receipt.status, 5);
+  assert.equal(records.find(r => r.hash === deployment.hash).action, "deploy_candidate");
+});

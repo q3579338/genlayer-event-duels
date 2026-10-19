@@ -1,0 +1,2 @@
+# Keep the reviewed Python contract bytes identical on Windows and CI.
+contracts/**/*.py text eol=lf

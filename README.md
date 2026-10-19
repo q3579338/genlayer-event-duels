@@ -6,6 +6,8 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 
 **[打开公开演示](https://q3579338.github.io/genlayer-event-duels/)** · [操作图解与验证](https://q3579338.github.io/genlayer-event-duels/review.html) · [自动检查](https://github.com/q3579338/genlayer-event-duels/actions/workflows/ci.yml) · [部署说明](docs/DEPLOYMENT.md)
 
+**2026-10-19 实测发现旧部署写入失败，已暂停新写操作。** 0.001 test GEN 到达旧合约 EVM 余额，但创建未成功、内部额度未登记，回收尚未验证。前端 v0.2.0 已准备独立充值的修复候选：先充值，再用既有额度创建／接受，后两步不再附带原生转账。候选尚待重新部署及真实存取验收，详见 [候选说明](contracts/candidates/README.md)。MetaMask 的网站告警尚未查明来源，不能据本地检查认定为误报。
+
 **Bradbury 合约：** [`0x3cE9F1A0143f77405784F47Aa56467013c3846E9`](https://explorer-bradbury.genlayer.com/address/0x3cE9F1A0143f77405784F47Aa56467013c3846E9) · [部署交易](https://explorer-bradbury.genlayer.com/tx/0x2248e257bec2e51a0b7aac4014d94895d70cf54a4f48e81c4c7653f76266ba90)
 
 ![本地演示界面，不代表链上部署或真实用户活动](docs/preview.png)
@@ -18,7 +20,7 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - Bradbury 连接：默认填入实际合约地址，可选择共识接受 / 最终确认的读取状态。通过 `genlayer-js` 连接钱包、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
 - 测试网交易记录：保留钱包、交易哈希、精确 wei 金额和最新原始回执；可导出或直接查看 JSON。浏览器存储失败时仍显示已广播哈希，不误导用户重复发送。
 - 钱包、网络、合约切换时失效旧读取，避免迟到请求显示旧账户额度。
-- MIT 开源；12 项 Python 状态转换测试、8 项交易与恢复测试、TypeScript 检查、生产构建。
+- MIT 开源；12 项旧合约状态测试、8 项充值候选测试、11 项交易与恢复测试、TypeScript 检查、生产构建。
 
 **验证边界：修正版已部署并成功执行，当前记录为 `FINALIZED` / `FINISHED_WITH_RETURN`；Chrome 页面已读取真实合约。部署已最终确认，尚未验证真实挑战交易、AI 裁决或链上到账。** 详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、单元测试和只读模拟都不能替代链上测试。
 
@@ -81,6 +83,7 @@ npm run build
 npm run check:schema
 npm run check:deploy
 npm run check:live
+npm run check:candidate
 ```
 
 - `npm test`：直接导入实际 Python 合约，使用最小 GenLayer 主机替身，检查权限、投入、期限、三态结算、重复提现和额度守恒。外部网络、AI、共识及转账均为替身。
@@ -88,6 +91,7 @@ npm run check:live
 - `npm run check:schema`：把公开合约源码发送到 Bradbury RPC，请远程 GenVM 提取接口；产物写到忽略提交的 `artifacts/`。需要网络，不会部署合约。
 - `npm run check:deploy`：通过 Bradbury 的只读 `gen_call` 执行构造函数，检查实际运行时兼容性，不签名、不广播交易。
 - `npm run check:live`：核对真实部署最终回执、链上源码全文与仓库一致，并读取最终状态；产物 `artifacts/live-audit.json`。公开快照见 [live-audit.json](public/live-audit.json)。不发送写交易。
+- `npm run check:candidate`：远程检查候选 payable/nonpayable 接口、构造函数，并执行带模拟 value 的充值／创建／取消／提现场景；这是只读模拟，不广播或证明真实到账。
 - 可选：安装 `genvm-lint==0.11.0` 后运行 `genvm-lint check contracts/EventDuels.py`。Windows 控制台若编码异常，设置 `PYTHONIOENCODING=utf-8`。
 
 验证记录见 [VALIDATION.md](docs/VALIDATION.md)。GitHub Actions 对提交执行状态测试和构建。

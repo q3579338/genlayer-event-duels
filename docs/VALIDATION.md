@@ -1,5 +1,13 @@
 # 验证记录
 
+## 2026-10-19 · 0.2.0 部署候选准备
+
+保留旧合约源码和旧部署，新增 `contracts/candidates/EventDuels.py`：独立最小 payable `deposit`；创建和接受改为 nonpayable，从已到账额度锁定。身份按 immediate sender 记账，提现固定给该 sender。前端仅在候选源码全文匹配且部署最终状态可读时开放写入。
+
+31 项本地测试通过：旧合约 12 项、候选 8 项、交易与恢复 11 项。远程 GenVM schema 证实 deposit.payable=true、create_duel.payable=false、accept_duel.payable=false；候选构造函数通过。带 0.001 模拟 value 的只读构造函数集成场景通过 deposit → 无效创建拒绝且保留额度 → 有效创建 → 取消 → 提现方法调用。没有广播部署或真实转账，不能作为独立链上存取证明。源码 SHA256：`041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb`。
+
+生产构建通过，旧部署写入保护已在 Chrome 验证：加载旧合约后创建按钮仍禁用，未连接钱包时部署按钮禁用。全局 `genvm-lint` 命令当前不可用；不把历史版本的 lint 记录用于此候选。候选部署、实际充值和原路提取到账仍待钱包确认和网络最终状态。
+
 ## 2026-10-19 · 前端 v0.1.1
 
 真实创建调用已广播：`0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512`。当前为 ACCEPTED / FINISHED_WITH_ERROR，调试 trace 返回 `Use a directly connected testnet wallet`。节点 receipt 的 sender 与 txOrigin 均为用户已连接钱包，但实际 GenVM 地址比较仍失败，完整原因尚未证实。没有成功创建挑战，不计作端到端通过。

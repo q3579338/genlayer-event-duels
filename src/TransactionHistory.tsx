@@ -4,6 +4,7 @@ import { finalOutcome } from "./transaction";
 import { short } from "./model";
 
 const labels: Record<string, string> = {
+  deposit: "充值到可用额度", deploy_candidate: "部署测试修复版",
   create_duel: "创建挑战", accept_duel: "接受挑战", resolve_duel: "请求核验",
   cancel_duel: "取消挑战", refund_duel: "退款", withdraw: "提取额度",
 };
@@ -18,7 +19,9 @@ function outcome(record: TransactionRecord) {
     return `${record.receipt.statusName || record.receipt.status || "等待网络"} · 尚未最终确认`;
   } catch { return "回执信息不完整 · 待核对"; }
 }
-export function TransactionHistory({ records }: { records: TransactionRecord[] }) {
+export function TransactionHistory({ records, busy, onCheck }: {
+  records: TransactionRecord[]; busy: boolean; onCheck: (record: TransactionRecord) => void;
+}) {
   const json = JSON.stringify({
     format: "event-duels-test-record/v1", network: "Bradbury", chainId: 4221,
     exportedAt: new Date().toISOString(), records,
@@ -40,6 +43,7 @@ export function TransactionHistory({ records }: { records: TransactionRecord[] }
         <div><strong>{labels[record.action] || record.action}</strong><span>{outcome(record)}</span></div>
         <a href={`https://explorer-bradbury.genlayer.com/tx/${record.hash}`} target="_blank" rel="noreferrer">{record.hash} <ExternalLink size={12} /></a>
         <small>钱包 {record.wallet ? short(record.wallet) : "旧记录未保存"} · 合约 {short(record.contract)} · 附带金额 {record.value || "0"} wei</small>
+        <button disabled={busy} onClick={() => onCheck(record)}>更新这笔回执 · 只读</button>
       </li>)}</ol>
     </> : <p>尚无发送记录。连接钱包不会创建交易。</p>}
   </details>;

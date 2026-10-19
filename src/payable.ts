@@ -1,9 +1,9 @@
-export function duelActionCall(name: string, duel?: { id: number; stake: string }) {
+export function duelActionCall(name: string, duel?: { id: number; stake: string }, creditBased = false) {
   if (name === "accept_duel" && !duel) throw new Error("请选择要接受的挑战。");
   return {
     name,
     args: duel ? [duel.id] : [],
-    value: name === "accept_duel" ? BigInt(duel!.stake) : 0n,
+    value: name === "accept_duel" && !creditBased ? BigInt(duel!.stake) : 0n,
   };
 }
 

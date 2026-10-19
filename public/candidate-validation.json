@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-19T11:07:50.168Z",
+  "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
+  "limitation": "Read-only constructor integration harness. Not separate on-chain transactions, AI consensus or receipt of external funds.",
+  "checks": [
+    {
+      "name": "schema",
+      "success": true
+    },
+    {
+      "name": "constructor",
+      "success": true
+    },
+    {
+      "name": "deposit/create/rejection/cancel/withdraw harness",
+      "success": true
+    }
+  ]
+}

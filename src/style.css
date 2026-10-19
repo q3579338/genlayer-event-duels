@@ -40,6 +40,11 @@
 .transaction-history li span { font-size: 12px; }
 .transaction-history li a { display: block; overflow-wrap: anywhere; font-size: 12px; color: var(--mint); margin: 7px 0; }
 .transaction-history button { display: inline-flex; align-items: center; gap: 7px; }
+.deployment-tools { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.deployment-tools summary { cursor: pointer; font-weight: 700; }
+.deposit-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 18px; margin: 20px 0; border: 1px solid var(--line); border-radius: 10px; }
+.deposit-row input { width: 110px; padding: 8px; margin-left: 8px; }
+.deposit-row p { width: 100%; margin: 0; color: var(--muted); font-size: 12px; }
 .transaction-history pre { max-height: 320px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
 :root {
   font-family: "Space Grotesk", "Noto Sans SC", sans-serif;

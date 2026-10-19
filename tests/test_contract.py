@@ -20,6 +20,10 @@ class Address(str):
     def as_hex(self):
         return str(self)
 
+    @property
+    def as_bytes(self):
+        return bytes.fromhex(self[2:])
+
 
 class Decorator:
     def __call__(self, fn):

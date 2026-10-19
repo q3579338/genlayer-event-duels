@@ -14,6 +14,11 @@ test("accept UI action maps the exact stake in wei to writeContract", async () =
     assert.equal(duelActionCall(name, name === "withdraw" ? undefined : duel).value, 0n);
   assert.throws(() => duelActionCall("accept_duel"), /请选择/);
 });
+test("deposit-first acceptance never attaches another native payment", () => {
+  const duel = { id: 42, stake: "1000000000000000001" };
+  const action = duelActionCall("accept_duel", duel, true);
+  assert.deepEqual(action, { name: "accept_duel", args: [42], value: 0n });
+});
 
 test("accepted or ready-to-finalize is not finalized", () => {
   for (const status of [0, 3, 5, 6, 11, 12, 13])
