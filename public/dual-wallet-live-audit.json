@@ -1,0 +1,69 @@
+{
+  "observedAt": "2026-10-19T22:13:18.740Z",
+  "network": "GenLayer Bradbury",
+  "chainId": 4221,
+  "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+  "walletRoles": {
+    "creator888": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+    "opponentCDC": "0x378eFaDE29d33eddefcF0Ef700917E343dfA2cdc"
+  },
+  "stage": "888 deposit broadcast; consensus incomplete",
+  "firstDepositAndSameWalletPayoutAlreadyVerified": "./withdraw-live-audit.json",
+  "dualWalletDepositA": {
+    "transactionId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
+    "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+    "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+    "status": "COMMITTING",
+    "statusCode": 3,
+    "executionResult": 0,
+    "votesCommitted": "4",
+    "validatorCount": 5,
+    "submission": {
+      "hash": "0xe37f775571e97bc0c3e9ba36bd4e2aa9c15be5b1c10b1eaf937682af1905b4cf",
+      "from": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+      "to": "0x0112bf6e83497965a5fdd6dad1e447a6e004271d",
+      "valueWei": "1000000000000000",
+      "method": "addTransaction",
+      "innerRecipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "receiptStatus": "success",
+      "gasUsed": "861286",
+      "effectiveGasPrice": "179496900",
+      "nonce": 6
+    }
+  },
+  "preparedChallenge": {
+    "fields": [
+      {
+        "name": "repository",
+        "value": "q3579338/genlayer-event-duels"
+      },
+      {
+        "name": "tag",
+        "value": "v0.1.1"
+      },
+      {
+        "name": "feature",
+        "value": "The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt."
+      },
+      {
+        "name": "accept",
+        "value": "2026-10-21T09:00"
+      },
+      {
+        "name": "deadline",
+        "value": "2026-10-21T10:00"
+      },
+      {
+        "name": "stake",
+        "value": "0.001"
+      }
+    ],
+    "timezone": "Asia/Shanghai",
+    "submitted": false
+  },
+  "depositB": null,
+  "createTransaction": null,
+  "acceptTransaction": null,
+  "fullDualWalletFlowVerified": false,
+  "limitation": "The 888 wallet has signed and broadcast exactly 0.001 test GEN for dual-wallet funding. Outer EVM success does not establish IC execution or credited final funds. The observed IC receipt is COMMITTING with 4 of 5 votes committed and no execution result. The prepared challenge is not submitted; CDC funding and acceptance have not started. Resume the same transaction; do not deposit again."
+}
