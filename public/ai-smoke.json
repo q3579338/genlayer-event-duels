@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-10-19T11:54:31.766Z",
+  "mode": "read-only-genvm-injected-fixture",
+  "checks": [
+    {
+      "startedAt": "2026-10-19T11:49:12.788Z",
+      "observedAt": "2026-10-19T11:49:17.364Z",
+      "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
+      "harnessSha256": "efa1d0212fb6a8775e7ef636460cd331df6cd2bd753345ac68e0d957a36667e3",
+      "expected": "Real release lookup and AI YES, recorded evidence and winner credit in an injected read-only fixture",
+      "success": false,
+      "observedVerdict": "UNKNOWN",
+      "observedStatus": "ACTIVE",
+      "evidenceAvailable": true
+    },
+    {
+      "startedAt": "2026-10-19T11:51:06.457Z",
+      "observedAt": "2026-10-19T11:51:11.160Z",
+      "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
+      "harnessSha256": "efa1d0212fb6a8775e7ef636460cd331df6cd2bd753345ac68e0d957a36667e3",
+      "expected": "Real release lookup and AI YES, recorded evidence and winner credit in an injected read-only fixture",
+      "success": true,
+      "observedVerdict": "YES",
+      "observedStatus": "SETTLED",
+      "winnerCreditWei": "2000000000000000"
+    },
+    {
+      "startedAt": "2026-10-19T11:53:55.289Z",
+      "observedAt": "2026-10-19T11:53:59.639Z",
+      "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
+      "harnessSha256": "efa1d0212fb6a8775e7ef636460cd331df6cd2bd753345ac68e0d957a36667e3",
+      "expected": "Real release lookup and AI YES, recorded evidence and winner credit in an injected read-only fixture",
+      "success": true,
+      "observedVerdict": "YES",
+      "observedStatus": "SETTLED",
+      "winnerCreditWei": "2000000000000000"
+    }
+  ],
+  "diagnostic": {
+    "separateInstrumentedRun": true,
+    "rawAnswer": "YES",
+    "conclusion": "The cause of the initial UNKNOWN is not established. No contract parser or prompt was changed."
+  },
+  "reproduce": "npm run check:ai-smoke",
+  "limitation": "The active duel, balances and deadlines were injected into a constructor fixture. The harness uses real public GitHub release data and GenVM AI. It does not broadcast, fund a duel, prove independent multi-validator consensus or transfer funds. An initial UNKNOWN was retained; later success is not a reliability estimate."
+}

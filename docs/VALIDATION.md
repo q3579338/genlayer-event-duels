@@ -10,6 +10,14 @@
 
 用户已确认候选部署交易 `0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862`，新地址 `0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca`。19:40（北京时间）回执为 ACCEPTED / FINISHED_WITH_RETURN；链上源码全文和以上 SHA256 匹配。接受状态 count、locked、owed 均为 0，最终状态暂不可读。不是部署签名待处理，不得重复发送。候选最终确认、实际充值和原路提取到账尚未验证。新增只读 `check:candidate-live` 留存回执、双状态额度和 EVM 余额；不会签名或广播。
 
+## 2026-10-19 · 真实网页与 AI 的只读检查
+
+使用候选源码和注入的 ACTIVE 挑战、模拟锁定额度及测试时间，通过远程 GenVM 读取本仓库真实 `v0.1.1` 发布说明并执行 `resolve_duel`。检查 YES、SETTLED、保存的证据及胜方 2000000000000000 wei 模拟额度。没有发送交易或使用真实资金，不能替代多验证者共识和链上结算。
+
+19:49 第一次检查在证据可用时得到 UNKNOWN，未通过预期 YES。单独的只读诊断场景输出原始回答 YES；19:51 使用未修改裁决逻辑的相同场景通过，19:53 保存为可复现命令后再次通过。初次 UNKNOWN 的具体原因未证实；没有为通过检查而修改部署候选的解析或提示词，也不根据少量运行推算可靠性。
+
+命令：`npm run check:ai-smoke`。每次将测试源码、原始 RPC 结果和简短摘要保存到独立 `artifacts/ai-smoke/<time>/`，失败返回非零退出码。公开摘要见 [ai-smoke.json](../public/ai-smoke.json)，保留首次未通过结果。待完成的真实双钱包验收和 72 小时退款没有因此变成已完成。
+
 ## 2026-10-19 · 前端 v0.1.1
 
 真实创建调用已广播：`0xa0f11dfb6e48f70344002dd78b81fb99990632b511244350314c9276e6c2d512`。最新为 FINALIZED / FINISHED_WITH_ERROR，调试 trace 返回 `Use a directly connected testnet wallet`。节点 receipt 的 sender 与 txOrigin 均为用户已连接钱包，但实际 GenVM 地址比较仍失败，完整原因尚未证实。没有成功创建挑战，不计作端到端通过。

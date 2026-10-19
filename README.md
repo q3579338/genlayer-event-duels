@@ -87,6 +87,7 @@ npm run check:deploy
 npm run check:live
 npm run check:candidate
 npm run check:candidate-live
+npm run check:ai-smoke
 ```
 
 - `npm test`：直接导入实际 Python 合约，使用最小 GenLayer 主机替身，检查权限、投入、期限、三态结算、重复提现和额度守恒。外部网络、AI、共识及转账均为替身。
@@ -96,6 +97,7 @@ npm run check:candidate-live
 - `npm run check:live`：核对真实部署最终回执、链上源码全文与仓库一致，并读取最终状态；产物 `artifacts/live-audit.json`。公开快照见 [live-audit.json](public/live-audit.json)。不发送写交易。
 - `npm run check:candidate`：远程检查候选 payable/nonpayable 接口、构造函数，并执行带模拟 value 的充值／创建／取消／提现场景；这是只读模拟，不广播或证明真实到账。
 - `npm run check:candidate-live`：只读核对新候选部署回执、源码、接受／最终状态额度和 EVM 余额；未最终确认时明确输出 `finalizedSourceReady=false`。使用 `npm run check:candidate-live -- --require-finalized` 可要求最终状态必须通过；不签名、不广播。
+- `npm run check:ai-smoke`：给构造函数注入明确标注的 ACTIVE 挑战、余额和测试时间，实际读取公开 GitHub Release 并调用 GenVM AI，检查 YES、记录证据和胜方额度；每次保留独立产物。首次返回 UNKNOWN、后续两次通过，不能据此估计可靠性。不是已签名挑战、多验证者共识或实际转账；[记录](public/ai-smoke.json)。
 - 可选：安装 `genvm-lint==0.11.0` 后运行 `genvm-lint check contracts/EventDuels.py`。Windows 控制台若编码异常，设置 `PYTHONIOENCODING=utf-8`。
 
 验证记录见 [VALIDATION.md](docs/VALIDATION.md)。GitHub Actions 对提交执行状态测试和构建。
