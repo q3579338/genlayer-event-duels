@@ -214,6 +214,20 @@ button.full {
   align-items: center;
   gap: 6px;
 }
+.wallet-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.wallet-change {
+  background: transparent;
+  font-size: 11px;
+  padding: 10px;
+  white-space: nowrap;
+  color: var(--muted);
+}
 .wallet {
   background: transparent;
   font-size: 12px;
@@ -1168,6 +1182,16 @@ dd {
     margin-left: auto;
     font-size: 10px;
     padding: 8px 10px;
+  }
+  .wallet-actions {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .wallet-change {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-color: transparent;
   }
   .brand strong {
     font-size: 20px;

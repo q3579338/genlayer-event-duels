@@ -372,27 +372,48 @@ export default function App() {
             <Github size={16} /> 开源代码
           </a>
         </nav>
-        <button
-          className="wallet"
-          disabled={busy}
-          onClick={() =>
-            isDemo
-              ? setPersona(persona === ALICE ? BOB : ALICE)
-              : run(async () => {
-                  const w = await connectWallet();
-                  context.current.wallet = w;
-                  setWallet(w);
-                  if (contract) await refresh(contract, w);
-                })
-          }
-        >
-          <Wallet size={16} />
-          {isDemo
-            ? `演示${persona === ALICE ? "甲" : "乙"}方 · 切换`
-            : wallet
-              ? short(wallet)
-              : "连接钱包"}
-        </button>
+        <div className="wallet-actions">
+          <button
+            className="wallet"
+            disabled={busy}
+            onClick={() =>
+              isDemo
+                ? setPersona(persona === ALICE ? BOB : ALICE)
+                : run(async () => {
+                    const w = await connectWallet();
+                    context.current.wallet = w;
+                    setWallet(w);
+                    if (contract) await refresh(contract, w);
+                  })
+            }
+          >
+            <Wallet size={16} />
+            {isDemo
+              ? `演示${persona === ALICE ? "甲" : "乙"}方 · 切换`
+              : wallet
+                ? short(wallet)
+                : "连接钱包"}
+          </button>
+          {!isDemo && <button
+            className="wallet-change"
+            disabled={busy}
+            title="在 MetaMask 中选择此网站使用的账户，仅连接，不发送交易"
+            onClick={() => run(async () => {
+              readGuard.current.invalidate();
+              context.current.wallet = "";
+              setWallet("");
+              setReady(false);
+              setWritable(false);
+              setCredit("0");
+              setLiveDuels([]);
+              const w = await connectWallet(true);
+              context.current.wallet = w;
+              setWallet(w);
+              setNotice(`当前连接账户：${w}。请核对后再发起操作。`);
+              if (contract) await refresh(contract, w);
+            })}
+          >更换账户</button>}
+        </div>
       </header>
       <main>
         <div className="mode-bar">

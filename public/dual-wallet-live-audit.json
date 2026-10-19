@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T22:18:44.805Z",
+  "observedAt": "2026-10-19T23:04:53.913Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -7,14 +7,14 @@
     "creator888": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
     "opponentCDC": "0x378eFaDE29d33eddefcF0Ef700917E343dfA2cdc"
   },
-  "stage": "888 deposit accepted and provisionally credited; finalization pending",
+  "stage": "888 deposit finalized; duel #1 create accepted, finalization pending",
   "firstDepositAndSameWalletPayoutAlreadyVerified": "./withdraw-live-audit.json",
   "dualWalletDepositA": {
     "transactionId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
     "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
     "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-    "status": "ACCEPTED",
-    "statusCode": 5,
+    "status": "FINALIZED",
+    "statusCode": 7,
     "executionResult": 1,
     "votesCommitted": "5",
     "validatorCount": 5,
@@ -30,7 +30,38 @@
       "effectiveGasPrice": "179496900",
       "nonce": 6
     },
-    "votesRevealed": "5"
+    "votesRevealed": "5",
+    "finalization": {
+      "evmTransaction": "0x9eca7eb6881cd1edd3bd0220f3c39065c67c9621cdbf077daddfb9c9057bcfec",
+      "blockNumber": "25555249",
+      "blockHash": "0xa305f2b13905d050b0448da8c2710da5531269b4bc8f6fee970d5d581bc2c5aa",
+      "finalizedAt": "2026-10-19T22:48:41.000Z",
+      "receiptStatus": "success"
+    },
+    "finalizedLedger": {
+      "observedAt": "2026-10-19T22:51:41.528Z",
+      "state": "finalized",
+      "stats": {
+        "count": "0",
+        "locked": "0",
+        "owed": "1000000000000000",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "senderCreditWei": "1000000000000000"
+    },
+    "transactionTipsAtDepositVerification": {
+      "accepted": {
+        "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
+        "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+        "status": 7
+      },
+      "finalized": {
+        "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
+        "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+        "status": 7
+      }
+    }
   },
   "preparedChallenge": {
     "fields": [
@@ -60,46 +91,116 @@
       }
     ],
     "timezone": "Asia/Shanghai",
-    "submitted": false
+    "submitted": true
   },
   "depositB": null,
-  "createTransaction": null,
+  "createTransaction": {
+    "transactionId": "0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7",
+    "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+    "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+    "status": "ACCEPTED",
+    "statusCode": 5,
+    "executionResult": 1,
+    "callData": {
+      "args": [
+        "q3579338/genlayer-event-duels",
+        "v0.1.1",
+        "The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt.",
+        "1792544400",
+        "1792548000",
+        "1000000000000000"
+      ],
+      "method": "create_duel"
+    },
+    "submission": {
+      "hash": "0x50800b2a996928007d73c260fdf789d703e074a97c01ee1f79e4e3d9bc4d21e1",
+      "from": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+      "to": "0x0112bf6e83497965a5fdd6dad1e447a6e004271d",
+      "valueWei": "0",
+      "nonce": 7,
+      "receiptStatus": "success",
+      "method": "addTransaction",
+      "blockNumber": "25555442",
+      "innerRecipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca"
+    },
+    "acceptedLedger": {
+      "stats": {
+        "count": "1",
+        "locked": "1000000000000000",
+        "owed": "0",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "duel": {
+        "accept_before": "1792544400",
+        "checks": "0",
+        "created_at": "1792450999",
+        "creator": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+        "deadline": "1792548000",
+        "evidence": {},
+        "feature": "The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt.",
+        "id": "1",
+        "last_checked": "0",
+        "opponent": "",
+        "refund_after": "1792807200",
+        "repository": "q3579338/genlayer-event-duels",
+        "settled_at": "0",
+        "source_url": "https://api.github.com/repos/q3579338/genlayer-event-duels/releases/tags/v0.1.1",
+        "stake": "1000000000000000",
+        "status": "OPEN",
+        "tag": "v0.1.1",
+        "verdict": ""
+      },
+      "creditA": "0",
+      "creditB": "0"
+    },
+    "earliestFinalizationEligibilityUtc": "2026-10-19T23:33:28.000Z",
+    "finalized": false
+  },
   "acceptTransaction": null,
   "fullDualWalletFlowVerified": false,
-  "limitation": "The signed 888 deposit is ACCEPTED with execution=1 and provisional credit of 0.001 test GEN. It is not FINALIZED; the independently checked finalized tip remains the earlier withdrawal. Earliest eligibility is not proof or a guarantee of actual finalization. The prepared challenge is not submitted; CDC funding and acceptance have not started. Resume this transaction; do not deposit again.",
+  "limitation": "The 888 deposit is FINALIZED with execution=1 and a guarded ledger proof. The subsequent create is ACCEPTED with execution=1, provisional OPEN duel #1 and 0.001 test GEN locked; it is not finalized. CDC has not funded or accepted. The release fixture is already published and serves as a known-positive regression test. No complete live dual-wallet, independent AI consensus or refund claim.",
   "earlierObservation": {
     "observedAt": "2026-10-19T22:13:18.740Z",
     "status": "COMMITTING",
     "votesCommitted": "4"
   },
   "acceptedLedger": {
-    "state": "accepted",
     "stats": {
-      "count": "0",
-      "locked": "0",
-      "owed": "1000000000000000",
+      "count": "1",
+      "locked": "1000000000000000",
+      "owed": "0",
       "scope": "testnet-prototype",
       "version": "event-duels/0.2.0"
     },
-    "senderCreditWei": "1000000000000000"
+    "duel": {
+      "accept_before": "1792544400",
+      "checks": "0",
+      "created_at": "1792450999",
+      "creator": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+      "deadline": "1792548000",
+      "evidence": {},
+      "feature": "The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt.",
+      "id": "1",
+      "last_checked": "0",
+      "opponent": "",
+      "refund_after": "1792807200",
+      "repository": "q3579338/genlayer-event-duels",
+      "settled_at": "0",
+      "source_url": "https://api.github.com/repos/q3579338/genlayer-event-duels/releases/tags/v0.1.1",
+      "stake": "1000000000000000",
+      "status": "OPEN",
+      "tag": "v0.1.1",
+      "verdict": ""
+    },
+    "creditA": "0",
+    "creditB": "0"
   },
   "finalizedRead": {
     "state": "finalized",
-    "error": "此合约还有尚未最终确认的交易。请等待，或选择「共识已接受」查看临时数据。"
-  },
-  "transactionTips": {
-    "accepted": {
-      "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
-      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 5
-    },
-    "finalized": {
-      "txId": "0x0ca8ebc22a3f75bcd27dfd370f8465eacd2d53e8044f2cd780d0e406dc09ff73",
-      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 7
-    }
+    "error": "Create remains ACCEPTED; the last fully guarded finalized snapshot predates create."
   },
   "externalContractBalanceWei": "1000000000000000",
-  "earliestFinalizationEligibilityUnix": "1792450000",
-  "earliestFinalizationEligibilityUtc": "2026-10-19T22:46:40.000Z"
+  "earliestFinalizationEligibilityUnix": "1792452808",
+  "earliestFinalizationEligibilityUtc": "2026-10-19T23:33:28.000Z"
 }

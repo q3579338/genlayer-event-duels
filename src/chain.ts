@@ -12,6 +12,7 @@ import { saveRecord } from "./journal";
 import candidateSource from "../contracts/candidates/EventDuels.py?raw";
 import { asFinalityTip, assertFinalizedTip, withFinalizedRead } from "./finality-read";
 import { BRADBURY_RPC, WALLET_RPC, BRADBURY_CHECKPOINT, assertBradburyHistory } from "./network-guard";
+import { requestWalletAccount } from "./wallet-access";
 export { WALLET_RPC } from "./network-guard";
 export const CANDIDATE_VERSION = "event-duels/0.2.0";
 
@@ -73,22 +74,19 @@ export function address(value: string): Address {
   if (!isAddress(value)) throw new Error("请填写有效的 Bradbury 合约地址。");
   return value;
 }
-export async function connectWallet(): Promise<Address> {
+export async function connectWallet(chooseAccount = false): Promise<Address> {
   if (!window.ethereum)
     throw new Error("请在 Chrome 中安装并解锁支持 GenLayer 的钱包。");
-  const accounts = (await window.ethereum.request({
-    method: "eth_requestAccounts",
-  })) as Address[];
-  if (!accounts[0]) throw new Error("钱包未提供账户。");
+  const selectedAccount = await requestWalletAccount(window.ethereum, chooseAccount);
   const client = createClient({
     chain,
-    account: accounts[0],
+    account: selectedAccount,
     provider: window.ethereum,
   });
   await client.connect("testnetBradbury");
   const current = await window.ethereum.request({ method: "eth_accounts" }) as Address[];
   const network = await window.ethereum.request({ method: "eth_chainId" });
-  if (current[0]?.toLowerCase() !== accounts[0].toLowerCase() || Number(network) !== chain.id)
+  if (current[0]?.toLowerCase() !== selectedAccount.toLowerCase() || Number(network) !== chain.id)
     throw new Error("连接过程中账户或网络已变更，请重新连接 Bradbury 钱包。");
   assertBradburyHistory(await window.ethereum.request({
     method: "eth_getBlockByNumber", params: [BRADBURY_CHECKPOINT.number, false],

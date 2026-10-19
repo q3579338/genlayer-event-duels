@@ -1,0 +1,57 @@
+{
+  "observedAt": "2026-10-19T22:51:41.528Z",
+  "network": "GenLayer Bradbury",
+  "chainId": 4221,
+  "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+  "transactionId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
+  "deployment": {
+    "status": 7,
+    "statusName": "FINALIZED",
+    "executionResult": 1,
+    "executionResultName": "FINISHED_WITH_RETURN"
+  },
+  "sender": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
+  "identityMatches": true,
+  "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
+  "sourceMatchesCandidate": true,
+  "deploymentFinalizedAndSourceVerified": true,
+  "finalizedSourceReady": true,
+  "states": [
+    {
+      "state": "accepted",
+      "stats": {
+        "count": "0",
+        "locked": "0",
+        "owed": "1000000000000000",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "senderCreditWei": "1000000000000000"
+    },
+    {
+      "state": "finalized",
+      "stats": {
+        "count": "0",
+        "locked": "0",
+        "owed": "1000000000000000",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "senderCreditWei": "1000000000000000"
+    }
+  ],
+  "transactionTips": {
+    "accepted": {
+      "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 7
+    },
+    "finalized": {
+      "txId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
+      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "status": 7
+    }
+  },
+  "externalBalanceWei": "1000000000000000",
+  "limitation": "Read-only deployment and ledger snapshot. Later actions require their own finalized successful receipts. A gen_call status label alone returned provisional credit; finalized reads are now guarded by on-chain transaction pointers before and after reading. This is not live duel, AI consensus or external payout proof. Latest EVM balance is separate from the Intelligent Contract ledger."
+}
