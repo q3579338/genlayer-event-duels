@@ -1,11 +1,11 @@
 # Bradbury 双钱包验收计划
 
-本计划截至 2026-10-19 尚待真实钱包签名。未执行的步骤不能填作通过。不要用本地模拟或部署成功代替完整资金流程。
+本计划截至 2026-10-19 已完成候选部署的钱包确认、广播与最终确认，源码全文和最终状态读取均通过；其余独立存取和双钱包步骤仍待执行。未执行的步骤不能填作通过。不要用本地模拟或部署成功代替完整资金流程。
 
 ## 固定条件
 
 - 旧合约 `0x3cE9F1A0143f77405784F47Aa56467013c3846E9` 只保留查询。真实创建失败，0.001 test GEN 已进入外部余额但未形成额度，回收未验证；不得再向其投入。
-- 前端 v0.2.0 对应 `contracts/candidates/EventDuels.py`，候选版本 `event-duels/0.2.0`，新地址待部署。钱包 chain ID 4221，单方最低投入 0.001 test GEN，网络费用另计。
+- 前端 v0.2.0 对应 `contracts/candidates/EventDuels.py`，候选版本 `event-duels/0.2.0`，新地址 `0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca`；见 [部署记录](candidate-deployment.json)。钱包 chain ID 4221，单方最低投入 0.001 test GEN，网络费用另计。
 - 两个参与钱包必须不同，并分别由用户在 MetaMask 中连接和确认交易。不得创建替代钱包、索取或保存私钥。
 - 测试仓库使用本项目公开仓库；正式发布 v0.1.1 的说明可以作为已有事实的回归测试证据。此类测试不是对未知未来事件的真实预测。
 - 建议功能标准：`The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt.`
@@ -13,9 +13,9 @@
 
 ## 签名前准备
 
-1. 检查公开站点及演示指南，确认 20 项自动测试和构建通过。
-2. 运行 `npm run check:live`，保存最新只读部署、源码匹配和 finalized 状态快照。
-3. 公开发布实际包含上述功能的 v0.1.1 Release，核对 GitHub 标签、非草稿、非预发布、发布时间及正文长度。不得为测试回填虚假的发布时间。
+1. 检查公开站点及演示指南，确认 31 项本地自动测试和构建通过。
+2. 运行 `npm run check:candidate-live -- --require-finalized`，保存新候选最终回执、源码匹配和 finalized 状态快照。`check:live` 是旧部署的只读检查，不能替代候选验证。
+3. v0.1.1 Release 已公开发布；核对 GitHub 标签、非草稿、非预发布、发布时间及正文长度。只读真实网页／AI 测试已在注入场景通过，也保留首次 UNKNOWN；不能替代真实裁决。不得为测试回填虚假的发布时间。
 4. 核对两个钱包的 test GEN 余额。当前观察：`0xa9EE…888888` 约 100 test GEN；`0x378e…A2cdc` 为 0。官方 faucet 的领取要求为主网至少 0.01 ETH，不能要求用户为此购买或转入主网资产。若不满足，可由用户签名把已有 test GEN 分给第二钱包。
 
 ## 逐笔验收与材料

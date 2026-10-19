@@ -1,12 +1,12 @@
 {
-  "observedAt": "2026-10-19T11:44:31.818Z",
+  "observedAt": "2026-10-19T12:02:54.062Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
   "transactionId": "0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862",
   "deployment": {
-    "status": 5,
-    "statusName": "ACCEPTED",
+    "status": 7,
+    "statusName": "FINALIZED",
     "executionResult": 1,
     "executionResultName": "FINISHED_WITH_RETURN"
   },
@@ -14,7 +14,7 @@
   "identityMatches": true,
   "sourceSha256": "041f9b904f648591d2e31b1d9b9b3839e3fa937285cf356068722d229ac3dabb",
   "sourceMatchesCandidate": true,
-  "finalizedSourceReady": false,
+  "finalizedSourceReady": true,
   "states": [
     {
       "state": "accepted",
@@ -29,7 +29,14 @@
     },
     {
       "state": "finalized",
-      "error": "{\"code\":-32001,\"message\":\"contract not found at address 0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca\",\"data\":\"\"}"
+      "stats": {
+        "count": "0",
+        "locked": "0",
+        "owed": "0",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "senderCreditWei": "0"
     }
   ],
   "externalBalanceWei": "0",

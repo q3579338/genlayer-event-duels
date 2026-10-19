@@ -10,6 +10,8 @@
 
 用户已确认候选部署交易 `0xa827b52613063200e8ae09ae2875d77e81f9b0c37e40187dc0782f099a4b4862`，新地址 `0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca`。19:40（北京时间）回执为 ACCEPTED / FINISHED_WITH_RETURN；链上源码全文和以上 SHA256 匹配。接受状态 count、locked、owed 均为 0，最终状态暂不可读。不是部署签名待处理，不得重复发送。候选最终确认、实际充值和原路提取到账尚未验证。新增只读 `check:candidate-live` 留存回执、双状态额度和 EVM 余额；不会签名或广播。
 
+20:02:54 更新：候选已 FINALIZED / FINISHED_WITH_RETURN，`npm run check:candidate-live -- --require-finalized` 通过。源码全文匹配；接受与最终状态版本均为 0.2.0，count、locked、owed、sender 额度及 EVM 余额均为 0。Chrome 自动恢复部署记录并显示“源码核对通过”，充值入口可用。尚未执行实际充值或提取。发现版本切换后查看合约链接和源码下载仍混用旧版，已改为当前地址链接与两版分别命名的源码入口；候选载入后禁用重复部署按钮。
+
 ## 2026-10-19 · 真实网页与 AI 的只读检查
 
 使用候选源码和注入的 ACTIVE 挑战、模拟锁定额度及测试时间，通过远程 GenVM 读取本仓库真实 `v0.1.1` 发布说明并执行 `resolve_duel`。检查 YES、SETTLED、保存的证据及胜方 2000000000000000 wei 模拟额度。没有发送交易或使用真实资金，不能替代多验证者共识和链上结算。

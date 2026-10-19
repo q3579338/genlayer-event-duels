@@ -1,6 +1,6 @@
 # GenLayer 贡献提交准备
 
-**2026-10-19 更新：旧合约真实创建最终执行失败，尚未重新提交 Explorer。** 前端 v0.2.0 独立充值候选已部署，执行成功、链上源码匹配，目前 ACCEPTED，等待最终确认；地址与交易见 [candidate-deployment.json](candidate-deployment.json)。31 项本地检查与远程只读 GenVM 场景通过。需先确认部署并验证真实存取，再完成双钱包流程。以下历史草稿不得用于宣称新版已完成链上验收。
+**2026-10-19 更新：旧合约真实创建最终执行失败，尚未重新提交 Explorer。** 前端 v0.2.0 独立充值候选已 FINALIZED、执行成功、链上源码全文匹配，最终状态可读；地址与交易见 [candidate-deployment.json](candidate-deployment.json)。31 项本地检查、远程只读 GenVM 场景及真实网页／AI 注入场景通过，也保留首次 UNKNOWN。需先验证真实存取，再完成双钱包流程。以下历史草稿不得用于宣称新版已完成链上验收。
 
 ## 官方规则快照
 

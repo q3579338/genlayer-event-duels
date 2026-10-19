@@ -18,7 +18,7 @@ import {
   CircleDot,
   Github,
 } from "lucide-react";
-import { formatEther, parseEther } from "viem";
+import { formatEther, parseEther, isAddress } from "viem";
 import type { CalldataEncodable } from "genlayer-js/types";
 import {
   ALICE,
@@ -48,6 +48,7 @@ import {
 } from "./chain";
 import type { Pending, ReadState } from "./chain";
 import contractSource from "../contracts/EventDuels.py?raw";
+import candidateSource from "../contracts/candidates/EventDuels.py?raw";
 import { DEPLOYMENT } from "./deployment";
 import { ReadGuard } from "./read-guard";
 import { loadJournal } from "./journal";
@@ -339,13 +340,13 @@ export default function App() {
         ? d.status === "OPEN"
         : d.creator === actor || d.opponent === actor),
   );
-  function downloadContract() {
+  function downloadContract(source: string, filename: string) {
     const url = URL.createObjectURL(
-      new Blob([contractSource], { type: "text/x-python" }),
+      new Blob([source], { type: "text/x-python" }),
     );
     const a = document.createElement("a");
     a.href = url;
-    a.download = "EventDuels.py";
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -511,9 +512,9 @@ export default function App() {
               <strong>连接合约</strong>
               <p>仅支持 Bradbury（4221）。Studio 模拟器地址不能在此使用。</p>
               <p>
-                已填入本项目合约地址。共识接受后的数据仍可能因申诉而改变。
-                <a href={`https://explorer-bradbury.genlayer.com/tx/${DEPLOYMENT.hash}`}
-                  target="_blank" rel="noreferrer">查看部署记录 <ExternalLink size={12} /></a>
+                请核对下方合约地址。共识接受后的数据仍可能因申诉而改变。
+                {isAddress(contract) && <a href={`https://explorer-bradbury.genlayer.com/address/${contract}`}
+                  target="_blank" rel="noreferrer">查看此合约 <ExternalLink size={12} /></a>}
               </p>
               {!contract.trim() && (
                 <div className="notice">
@@ -603,8 +604,12 @@ export default function App() {
               </button>
             </div>
             <p>
-              <button className="link-button" onClick={downloadContract}>
-                下载合约源码
+              <button className="link-button" onClick={() => downloadContract(contractSource, "EventDuels-legacy-0.1.0.py")}>
+                下载旧版 0.1.0 源码
+              </button>{" "}
+              ·{" "}
+              <button className="link-button" onClick={() => downloadContract(candidateSource, "EventDuels-0.2.0.py")}>
+                下载修复版 0.2.0 源码
               </button>{" "}
               ·{" "}
               <a
@@ -627,11 +632,11 @@ export default function App() {
               <summary>测试修复版 · 部署与验证</summary>
               <p>0.2.0 将充值和挑战分开。创建或接受失败时，已有额度仍保留；充值本身与最终到账仍需真实测试。旧合约和历史记录保留。</p>
               <p>部署只使用测试网网络费，不充值、不发起挑战。最终确认后，网站会核对完整源码再开放写操作。钱包安全提醒仍需你自行检查。</p>
-              <button disabled={busy || (!!pending && !failedLegacyPending) || !wallet} onClick={() => run(async () => {
+              <button disabled={busy || writable || (!!pending && !failedLegacyPending) || !wallet} onClick={() => run(async () => {
                 const p = await deployCandidate(wallet);
                 setPending(p);
                 await wait(p);
-              })}>部署测试修复版 · 需要钱包确认</button>
+              })}>{writable ? "修复版已载入 · 无需重复部署" : "部署测试修复版 · 需要钱包确认"}</button>
               {!!pending && <p>{failedLegacyPending
                 ? "旧创建已报告执行错误，仍待最终确认。部署是另一笔独立交易；旧编号和回执会保留在交易记录中，可继续只读查询。"
                 : "先核对已有交易的最终状态，再部署修复版。"}</p>}
