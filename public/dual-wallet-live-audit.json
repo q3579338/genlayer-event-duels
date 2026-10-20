@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-19T23:40:09.410Z",
+  "observedAt": "2026-10-19T23:55:04.723Z",
   "network": "GenLayer Bradbury",
   "chainId": 4221,
   "contract": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
@@ -7,7 +7,7 @@
     "creator888": "0xa9EE18b34Ec00664D73d89b8F8BBA68bEB888888",
     "opponentCDC": "0x378eFaDE29d33eddefcF0Ef700917E343dfA2cdc"
   },
-  "stage": "888 create finalized as OPEN duel #1; CDC deposit signature requested",
+  "stage": "888 create finalized; CDC deposit accepted, awaiting finalization",
   "firstDepositAndSameWalletPayoutAlreadyVerified": "./withdraw-live-audit.json",
   "dualWalletDepositA": {
     "transactionId": "0x9e284cd9ff7d28b7e054324b08cc6fab90abd83e4da2699ab16a21d8ff574f39",
@@ -94,13 +94,59 @@
     "submitted": true
   },
   "depositB": {
+    "transactionId": "0xa71f9654935db7fd50a354412fed6c22a4656be5a35803c9037760827e3c7a49",
     "sender": "0x378eFaDE29d33eddefcF0Ef700917E343dfA2cdc",
     "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
     "method": "deposit",
-    "expectedValueWei": "1000000000000000",
-    "status": "AWAITING_WALLET_SIGNATURE",
-    "transactionId": null,
-    "signatureRequestObservedAt": "2026-10-19T23:38:59.723Z"
+    "valueWei": "1000000000000000",
+    "status": "ACCEPTED",
+    "statusCode": 5,
+    "executionResult": 1,
+    "submission": {
+      "hash": "0xb75a1dccbf1639df28513e0c53a876702b29cec0cf5256a5f29df13ce0518206",
+      "from": "0x378efade29d33eddefcf0ef700917e343dfa2cdc",
+      "to": "0x0112bf6e83497965a5fdd6dad1e447a6e004271d",
+      "valueWei": "1000000000000000",
+      "nonce": 0,
+      "method": "addTransaction",
+      "innerRecipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
+      "receiptStatus": "success",
+      "gasUsed": "844174",
+      "effectiveGasPrice": "131444400"
+    },
+    "acceptedLedger": {
+      "stats": {
+        "count": "1",
+        "locked": "1000000000000000",
+        "owed": "1000000000000000",
+        "scope": "testnet-prototype",
+        "version": "event-duels/0.2.0"
+      },
+      "duel": {
+        "accept_before": "1792544400",
+        "checks": "0",
+        "created_at": "1792450999",
+        "creator": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
+        "deadline": "1792548000",
+        "evidence": {},
+        "feature": "The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt.",
+        "id": "1",
+        "last_checked": "0",
+        "opponent": "",
+        "refund_after": "1792807200",
+        "repository": "q3579338/genlayer-event-duels",
+        "settled_at": "0",
+        "source_url": "https://api.github.com/repos/q3579338/genlayer-event-duels/releases/tags/v0.1.1",
+        "stake": "1000000000000000",
+        "status": "OPEN",
+        "tag": "v0.1.1",
+        "verdict": ""
+      },
+      "creditA": "0",
+      "creditB": "1000000000000000"
+    },
+    "earliestFinalizationEligibilityUtc": "2026-10-20T00:23:20.000Z",
+    "finalized": false
   },
   "createTransaction": {
     "transactionId": "0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7",
@@ -219,7 +265,7 @@
   },
   "acceptTransaction": null,
   "fullDualWalletFlowVerified": false,
-  "limitation": "The 888 deposit and create are FINALIZED with execution=1. A guarded final snapshot verifies OPEN duel #1, creator 888, no opponent, exact 0.001 test GEN stake/locked, and zero available credits for both wallets. CDC is connected in the website; its separate 0.001 deposit request is awaiting the user wallet signature and has no observed hash. CDC funding/acceptance and live AI consensus settlement/refund remain unverified.",
+  "limitation": "The creator deposit and create are FINALIZED. CDC deposit is ACCEPTED with execution=1, exact 0.001 test GEN outer value, correct sender/recipient, and provisional CDC credit. It is not finalized. Duel #1 remains OPEN with only the creator stake locked. CDC acceptance has not been submitted; AI consensus, settlement and refunds remain unverified.",
   "earlierObservation": {
     "observedAt": "2026-10-19T22:13:18.740Z",
     "status": "COMMITTING",
@@ -229,7 +275,7 @@
     "stats": {
       "count": "1",
       "locked": "1000000000000000",
-      "owed": "0",
+      "owed": "1000000000000000",
       "scope": "testnet-prototype",
       "version": "event-duels/0.2.0"
     },
@@ -254,53 +300,13 @@
       "verdict": ""
     },
     "creditA": "0",
-    "creditB": "0"
+    "creditB": "1000000000000000"
   },
   "finalizedRead": {
     "state": "finalized",
-    "stats": {
-      "count": "1",
-      "locked": "1000000000000000",
-      "owed": "0",
-      "scope": "testnet-prototype",
-      "version": "event-duels/0.2.0"
-    },
-    "duel": {
-      "accept_before": "1792544400",
-      "checks": "0",
-      "created_at": "1792450999",
-      "creator": "0xa9ee18b34ec00664d73d89b8f8bba68beb888888",
-      "deadline": "1792548000",
-      "evidence": {},
-      "feature": "The release notes explicitly announce exportable transaction records containing transaction hash, wallet, exact wei amount, and raw receipt.",
-      "id": "1",
-      "last_checked": "0",
-      "opponent": "",
-      "refund_after": "1792807200",
-      "repository": "q3579338/genlayer-event-duels",
-      "settled_at": "0",
-      "source_url": "https://api.github.com/repos/q3579338/genlayer-event-duels/releases/tags/v0.1.1",
-      "stake": "1000000000000000",
-      "status": "OPEN",
-      "tag": "v0.1.1",
-      "verdict": ""
-    },
-    "creditA": "0",
-    "creditB": "0"
+    "error": "CDC deposit remains ACCEPTED; a guarded current finalized ledger cannot yet be claimed."
   },
-  "externalContractBalanceWei": "1000000000000000",
-  "earliestFinalizationEligibilityUnix": "1792452808",
-  "earliestFinalizationEligibilityUtc": "2026-10-19T23:33:28.000Z",
-  "transactionTips": {
-    "accepted": {
-      "txId": "0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7",
-      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 7
-    },
-    "finalized": {
-      "txId": "0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7",
-      "recipient": "0x3D53d6546A81e64Aa17A1472A2B101e7479905Ca",
-      "status": 7
-    }
-  }
+  "externalContractBalanceWei": "2000000000000000",
+  "earliestFinalizationEligibilityUnix": "1792455800",
+  "earliestFinalizationEligibilityUtc": "2026-10-20T00:23:20.000Z"
 }

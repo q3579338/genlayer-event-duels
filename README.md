@@ -6,7 +6,7 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 
 **[打开公开演示](https://q3579338.github.io/genlayer-event-duels/)** · [操作图解与验证](https://q3579338.github.io/genlayer-event-duels/review.html) · [自动检查](https://github.com/q3579338/genlayer-event-duels/actions/workflows/ci.yml) · [部署说明](docs/DEPLOYMENT.md)
 
-**2026-10-20：新候选首笔 0.001 test GEN 充值与原路提现已完成链上核对。** 提现于北京时间 10 月 19 日 21:17:37 最终确认，888 钱包在对应区块增加同额余额，合约原生余额归零。见[外部到账凭证](public/withdraw-live-audit.json)。旧部署创建失败、未记账的另一笔 0.001 test GEN 回收仍未验证，旧写操作保持暂停。新候选尚待双钱包创建／接受和 AI 裁决实测，不能把存取通过写成完整端到端通过。MetaMask 的网站告警来源仍未查明。
+**2026-10-20：新候选首笔 0.001 test GEN 充值与原路提现已完成链上核对。** 提现于北京时间 10 月 19 日 21:17:37 最终确认，888 钱包在对应区块增加同额余额，合约原生余额归零。见[外部到账凭证](public/withdraw-live-audit.json)。旧部署创建失败、未记账的另一笔 0.001 test GEN 回收仍未验证，旧写操作保持暂停。新候选的挑战 #1 创建已最终确认；CDC 充值已接受，双钱包接受和 AI 裁决尚待实测，不能把存取通过写成完整端到端通过。MetaMask 的网站告警来源仍未查明。
 
 **节点核对：** 通用 L2 域名当前返回不同交易历史，尽管同样报告链 ID 4221。最终状态查询改为 Bradbury RPC，钱包使用经历史核对的 `https://zksync-os-testnet-genlayer.zksync.dev`。连接和每次写入前都会核对本部署的历史区块；不匹配时阻止签名请求。见[带时间的节点快照](public/network-readiness.json)。
 
@@ -24,9 +24,9 @@ A Chinese-first, testnet-only application for two-party GitHub release predictio
 - Bradbury 连接：默认填入实际合约地址，可选择共识接受 / 最终确认的读取状态。通过 `genlayer-js` 连接钱包、发送交易并跟踪最终确认。超时保留交易编号，不自动重发。
 - 测试网交易记录：保留钱包、交易哈希、精确 wei 金额和最新原始回执；可导出或直接查看 JSON。浏览器存储失败时仍显示已广播哈希，不误导用户重复发送。
 - 钱包、网络、合约切换时失效旧读取，避免迟到请求显示旧账户额度。
-- MIT 开源；12 项旧合约状态测试、8 项充值候选测试、15 项交易与恢复测试、TypeScript 检查、生产构建。
+- MIT 开源；12 项旧合约状态测试、8 项充值候选测试、20 项交易、恢复、账户与网络检查、TypeScript 检查、生产构建。
 
-**验证边界：旧 0.1.0 的真实创建调用最终执行失败。新 0.2.0 部署源码匹配，首笔充值和原路提现实际到账已验证。** 双钱包挑战交易、AI 共识裁决和真实 72 小时退款仍待验证。详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、37 项单元测试和只读模拟都不能替代其余链上测试。
+**验证边界：旧 0.1.0 的真实创建调用最终执行失败。新 0.2.0 部署源码匹配，首笔充值和原路提现实际到账已验证。** 双钱包挑战交易、AI 共识裁决和真实 72 小时退款仍待验证。详情见[部署记录](docs/DEPLOYMENT.md)。本地演示、40 项单元测试和只读模拟都不能替代其余链上测试。
 
 ## 为什么使用 GenLayer
 

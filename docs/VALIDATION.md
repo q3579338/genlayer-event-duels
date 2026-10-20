@@ -1,5 +1,9 @@
 # 验证记录
 
+## 2026-10-20 · CDC 充值已接受，按当前成果提交 Explorer
+
+用户明确要求停止额外测试并尽快提交。当前提交材料据实区分已验证与待验证，不再等待双钱包和 AI 全流程完成才提交。CDC 已签名充值 `0xa71f9654935db7fd50a354412fed6c22a4656be5a35803c9037760827e3c7a49`，23:55 UTC 快照为 ACCEPTED / execution=1。EVM `0xb75a1dccbf1639df28513e0c53a876702b29cec0cf5256a5f29df13ce0518206` 核对发送者 CDC、候选接收地址、value=1000000000000000 wei、nonce=0 和成功提交。临时 CDC 额度与 owed 为 0.001，creator 已锁定的 0.001 不变。最早最终确认资格为北京时间 08:23:20；尚未确认或接受挑战，AI 裁决及退款仍未实测。保留同笔交易编号，停止扩展测试，不追加链上操作。
+
 ## 2026-10-20 · 创建 #1 最终确认，CDC 充值请求待签名
 
 创建 `0x639e86817befc3088ed90986cc1c5de6615d8eab518d0209d8bce630ea5d81c7` 已 FINALIZED / execution=1。实际最终确认时间为北京时间 07:33:38，EVM `0x2702e12933120e5b0aeb8aef0a74c7c611ec738d0fc7f1601b937e77a76c68a8`，区块 25555968。07:34:35 的独立读取在前后核对同一合约的 accepted/finalized 指针相同且均为此最终创建，同时再次验证完整源码 SHA256。最终挑战 #1 为 OPEN、creator=888、opponent 为空，stake/locked=1000000000000000 wei，双方可用额度与 owed 均为 0，count=1。六个参数和附带 value=0 与已签名标准相符。见 [最终创建证明](../public/dual-wallet-create-finalized.json)。
